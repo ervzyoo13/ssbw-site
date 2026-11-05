@@ -1,5 +1,7 @@
 // Renders the page from data/site.json. null in the data becomes a marked placeholder (S-002).
 
+import { scenery } from './scenery.js';
+
 export const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const ph = (label) => `<span class="ph">[${label}?]</span>`;
 export const val = (v, label) => (v === null || v === undefined || v === '' ? ph(label) : esc(v));
@@ -40,6 +42,16 @@ function menuCard(item, symbol) {
   </li>`;
 }
 
+// With no address for the full menu yet, the button only says it is coming, so there is never a broken link.
+function renderMenuCta({ fullMenuUrl, fullMenuButton, fullMenuLine, fullMenuSoon }) {
+  const arrow = '<svg aria-hidden="true" focusable="false"><use href="#ic-arrow"/></svg>';
+  const button = fullMenuUrl
+    ? `<a class="btn btn--primary menu-cta__btn" href="${esc(fullMenuUrl)}">${esc(fullMenuButton)}${arrow}</a>`
+    : `<button class="btn btn--primary menu-cta__btn" type="button" data-full-menu-soon>${esc(fullMenuButton)}${arrow}</button>
+       <p class="menu-cta__note" data-full-menu-note hidden>${esc(fullMenuSoon)}</p>`;
+  $('menu-cta').innerHTML = `<p class="menu-cta__line">${esc(fullMenuLine)}</p>${button}`;
+}
+
 function renderServices(d) {
   $('more-title').textContent = d.services.title;
   const url = d.shop.messenger.url;
@@ -68,25 +80,41 @@ function renderReviews(d) {
     </li>`).join('');
 }
 
-// The road trip: signboards take turns left and right, and the tent stays on the side of the last board.
+const scene = (name, inner) => `<div class="scene scene--${name}" data-scenery aria-hidden="true"><div class="scene__in">${inner}</div></div>`;
+
+// The road trip: billboards take turns left and right, and the tent carries the pattern on as the last stop.
 function renderRoute(d) {
-  const { title, stops, finish } = d.route;
+  const { title, stops, finish, welcomeSign } = d.route;
   const { date, place } = d.settings.nextPopUp;
   $('route-title').textContent = title;
-  $('route-stops').innerHTML = stops.map((s, i) => `
-    <li class="stop stop--${i % 2 ? 'right' : 'left'}${s.title && s.date ? '' : ' stop--todo'}">
+  $('route-stops').innerHTML = stops.map((s, i) => {
+    const sticker = s.sticker ? `<p class="stop__sticker stop__sticker--${esc(s.sticker.style)}">${esc(s.sticker.text)}</p>` : '';
+    const around = s.scene && scenery[s.scene] ? scene(esc(s.scene), scenery[s.scene]) : '';
+    return `
+    <li class="stop stop--${i % 2 ? 'right' : 'left'}${s.title && s.date ? '' : ' stop--todo'}${sticker ? ' stop--stickered' : ''}">
       <div class="stop__pop">
         <div class="stop__board">
+          ${sticker}
           <div class="stop__frame">${s.photo ? photoTag(s.photo, 'stop__photo') : `<div class="stop__nophoto">${ph('PHOTO')}</div>`}</div>
           <div class="stop__words">
             <h3 class="stop__title">${s.title ? words(s.title) : ph('EVENT')}</h3>
             <p class="stop__date">${val(s.date, 'DATE')}</p>
+            <p class="stop__text">${val(s.text, 'DESCRIPTION')}</p>
           </div>
         </div>
         <span class="stop__post" aria-hidden="true"></span>
       </div>
-    </li>`).join('');
-  $('tent').classList.add(`tent--${stops.length % 2 ? 'left' : 'right'}`);
+      ${around}
+    </li>`;
+  }).join('');
+  $('trip-scenery').innerHTML = [
+    scene('cloud scene--cloud-a', scenery.cloud),
+    scene('cloud scene--cloud-b', scenery.cloud),
+    scene('sea', scenery.sea),
+    welcomeSign ? scene('sign', `<p class="roadsign">${esc(welcomeSign)}</p>`) : '',
+  ].join('');
+  $('route').insertAdjacentHTML('afterbegin', scene('cloud scene--far scene--far-a', scenery.cloud) + scene('cloud scene--far scene--far-b', scenery.cloud));
+  $('tent').classList.add(`tent--${stops.length % 2 ? 'right' : 'left'}`);
   $('tent-title').textContent = finish.sign;
   $('tent-next').innerHTML = `${val(date, 'DATE')} at ${val(place, 'PLACE')}`;
   $('tent-btn').textContent = finish.button;
@@ -129,6 +157,7 @@ export function renderAll(d) {
   $('menu-title').textContent = d.menuIntro.title;
   $('menu-text').textContent = d.menuIntro.text;
   $('menu-grid').innerHTML = d.menu.map((item) => menuCard(item, d.settings.currencySymbol)).join('');
+  renderMenuCta(d.menuIntro);
   renderServices(d);
   renderReviews(d);
   renderRoute(d);

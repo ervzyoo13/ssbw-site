@@ -15,6 +15,19 @@
   <link rel="stylesheet" href="assets/vendor/lenis/lenis.css">
   <link rel="stylesheet" href="css/site.css">
   <script>
+    // Every visit and reload starts at the top, with the hero (S-031). This has to run before the browser restores
+    // the old position, or the intro plays over whichever section the visitor last looked at. A #link in the address
+    // is taken out so the browser can't jump there behind the intro. js/main.js follows it once the intro has played.
+    (function () {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      var hash = location.hash;
+      if (!hash) return;
+      var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+      history.replaceState(null, '', location.pathname + location.search);
+      if (!nav || nav.type === 'navigate') window.ssbwHash = hash;
+    }());
+  </script>
+  <script>
     // Hide the hero until motion has set it up, with a safety so it can never stay hidden.
     document.documentElement.classList.add('js-wait');
     setTimeout(function () { document.documentElement.classList.remove('js-wait'); }, 4000);
@@ -60,6 +73,7 @@
     <symbol id="ic-menu" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M3 6h18M3 12h13M3 18h18"/></symbol>
     <symbol id="ic-cart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" d="M2.5 3.5h2.6l2.5 12h10.8l2.1-8.5H6M9 20.5h.01M17.5 20.5h.01"/></symbol>
     <symbol id="ic-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M5 5l14 14M19 5L5 19"/></symbol>
+    <symbol id="ic-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" d="M4 12h15M13 6l6 6-6 6"/></symbol>
     <symbol id="ic-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M15 4l-8 8 8 8"/></symbol>
     <symbol id="ic-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
     <symbol id="ic-minus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M5 12h14"/></symbol>
@@ -186,6 +200,7 @@
           <p class="lead" id="menu-text"></p>
         </header>
         <ul class="cards" id="menu-grid"></ul>
+        <div class="menu-cta" id="menu-cta"></div>
       </div>
     </section>
 
@@ -211,8 +226,6 @@
     </section>
 
     <section class="section route-sec" id="route" aria-labelledby="route-title" tabindex="-1">
-      <svg class="piece route-p1" viewBox="0 0 120 120" data-depth="0.8" data-depth-phone="0.5" aria-hidden="true"><use href="#i-sesame"/></svg>
-      <svg class="piece route-p2" viewBox="0 0 160 90" data-depth="1.1" aria-hidden="true"><use href="#i-patty"/></svg>
       <div class="wrap">
         <header class="sec-head"><h2 class="h2" id="route-title" data-lines></h2></header>
         <!-- The SimSim Road Trip (S-030). js/route.js draws the road and loads the cart from assets/route-cart.svg. -->
@@ -222,6 +235,7 @@
             <path class="trip__tar"/>
             <path class="trip__dash"/>
           </svg>
+          <div id="trip-scenery"></div>
           <ol class="trip__stops" id="route-stops"></ol>
           <div class="tent" id="tent" role="group" aria-labelledby="tent-title">
             <svg class="tent__awning" viewBox="0 0 400 130" aria-hidden="true"><use href="#tent-awning"/></svg>

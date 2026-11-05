@@ -46,7 +46,11 @@
   },
   "menuIntro": {
     "title": "Smash it with SimSim",
-    "text": "Names and prices marked in brackets are still being confirmed."
+    "text": "Names and prices marked in brackets are still being confirmed.",
+    "fullMenuUrl": "",
+    "fullMenuButton": "See the full menu",
+    "fullMenuLine": "Burgers, wraps and more",
+    "fullMenuSoon": "Full menu coming soon"
   },
   "menu": [
     {
@@ -153,11 +157,14 @@
       "sign": "Next stop?",
       "button": "Pre-order now"
     },
+    "welcomeSign": "Surigao City",
     "stops": [
       {
         "title": "Another successful Pica-Pica",
         "date": "Aug 10",
         "text": "A wedding spread of mini burgers and tacos.",
+        "sticker": { "text": "Pica-Pica", "style": "ribbon" },
+        "scene": "party",
         "photo": {
           "src": "assets/img/temp/t9-tiered-tacos.webp",
           "width": 232,
@@ -169,6 +176,8 @@
         "title": "141 buns. Gone.",
         "date": "Sep 27",
         "text": "141 buns sold. Same love. Same hungry Fam.",
+        "sticker": { "text": "Sold out!", "style": "gold" },
+        "scene": "queue",
         "photo": {
           "src": "assets/img/temp/t3-chicken-burger.webp",
           "width": 335,
@@ -180,22 +189,12 @@
         "title": null,
         "date": null,
         "text": null,
+        "scene": "palm",
         "photo": {
           "src": "assets/img/temp/t5-green-sauce-2.webp",
           "width": 149,
           "height": 150,
           "alt": "Burger with green sauce and melted cheese in checkered paper"
-        }
-      },
-      {
-        "title": null,
-        "date": null,
-        "text": null,
-        "photo": {
-          "src": "assets/img/temp/t6-stacked.webp",
-          "width": 149,
-          "height": 150,
-          "alt": "Two sesame burgers stacked in checkered paper"
         }
       }
     ]

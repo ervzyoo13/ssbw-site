@@ -150,6 +150,13 @@ export function initShop(data, cart) {
       return;
     }
 
+    if (e.target.closest('[data-full-menu-soon]')) {
+      const note = document.querySelector('[data-full-menu-note]');
+      note.hidden = false;
+      announce(note.textContent);
+      return;
+    }
+
     const messenger = e.target.closest('[data-messenger]');
     if (messenger && !data.shop.messenger.url) {
       e.preventDefault();

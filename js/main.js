@@ -6,6 +6,15 @@ import { initShop } from './shop.js';
 import { initWaves } from './waves.js';
 import { initRoute } from './route.js';
 import { initMotion } from './motion.js';
+import { scroller } from './scroller.js';
+import { guardPieces } from './pieces.js';
+
+// A deliberate #link in the address goes to its section once the intro has played, unless the visitor has
+// already started scrolling themselves. index.html took the hash out of the address before the page loaded.
+function followHash() {
+  const target = window.ssbwHash && document.getElementById(window.ssbwHash.slice(1));
+  if (target && window.scrollY < 40) scroller.to(target);
+}
 
 async function boot() {
   let data;
@@ -31,7 +40,8 @@ async function boot() {
     Promise.all([document.fonts.load('900 100px "Smooch Sans"'), document.fonts.load('700 100px "Smooch Sans"')]),
     new Promise((resolve) => setTimeout(resolve, 1500)),
   ]);
-  initMotion();
+  guardPieces();
+  initMotion().then(followHash);
 }
 
 boot();

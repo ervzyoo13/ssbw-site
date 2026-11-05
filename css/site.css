@@ -184,16 +184,17 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 
 /* Ingredient pieces sit behind all content and only ever in the margins. tools/check-site.mjs tests this. */
 .piece { position: absolute; z-index: 0; height: auto; pointer-events: none; will-change: transform; overflow: visible; }
+/* js/pieces.js: at this window size the piece's parallax would reach a headline or other important text */
+.piece.is-out { display: none; }
 .hero-p1 { width: 72px; left: -16px; bottom: 16px; }
 .hero-p2 { width: 48px; right: -8px; bottom: 16px; }
 .hero-p3, .hero-p4 { display: none; }
-.menu { padding-bottom: 80px; }
-.menu-p1 { width: 88px; right: -16px; bottom: 16px; }
+.menu { padding-bottom: 48px; }
+.menu-p1 { width: 72px; right: -24px; bottom: 16px; }
 .menu-p2 { display: none; }
 .more-p1 { width: 72px; right: -16px; top: 32px; }
 .more-p2 { display: none; }
 .fam-p1 { width: 72px; right: -24px; bottom: 8px; }
-.route-p1, .route-p2 { display: none; }
 .about-p1 { width: 56px; right: -8px; bottom: 8px; }
 
 /* Menu */
@@ -211,6 +212,14 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .card__price { margin: 8px 0 16px; font-size: 16px; font-weight: 700; color: var(--maroon); }
 .card .btn { margin-top: auto; min-height: 48px; }
 .card .btn[data-added] { background: var(--ink); border-color: var(--ink); }
+
+/* Below the cards: the way to the full menu. It fills the space that used to sit empty before the wave. */
+.menu-cta { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 32px; text-align: center; }
+.menu-cta__line { font-size: 18px; font-weight: 500; color: var(--ink-soft); }
+.menu-cta__btn { gap: 8px; }
+.menu-cta__btn svg { width: 22px; height: 22px; flex: none; transition: transform .35s var(--ease-out); }
+.menu-cta__btn:hover svg { transform: translateX(4px); }
+.menu-cta__note { padding: 4px 12px; border-radius: 8px; background: rgba(215, 177, 81, .38); font-weight: 700; }
 
 /* More from SimSim */
 .services { display: grid; gap: 56px; }
@@ -235,11 +244,13 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .note__text { font-size: 18px; font-weight: 500; }
 .note__name { color: var(--ink-soft); }
 
-/* The SimSim Road Trip (S-030). Stays on cream. js/route.js draws the road from where the boards really are.
-   The road only crosses in the gaps between boards, so --gap has to leave room for the cart to pass. */
+/* The SimSim Road Trip (S-030, S-032). Stays on cream. js/route.js draws the road from where the boards really are.
+   On phones and tablets the road holds a lane beside each board and crosses in the gaps, so --gap leaves room for the
+   cart to pass. From 1024px it is a street: boards down both sides, staggered by a negative --gap, with the road
+   swaying down the channel between them. Scenery that would touch anything is hidden by js/route.js. */
 .route-sec { padding-top: 0; padding-bottom: 0; }
 .route-sec .sec-head { margin-bottom: 8px; }
-.trip { --road: 40px; --dash: 4px; --cart-w: 72px; --post: 44px; --gap: 144px; --channel: clamp(76px, 28%, 104px); --inset: 4px; --lean: 1deg; position: relative; padding-bottom: calc(var(--road) + 16px); }
+.trip { --road: 36px; --dash: 4px; --cart-w: 64px; --post: 48px; --gap: 128px; --channel: 76px; --inset: 4px; --lean: .75deg; --board-w: calc(100% - var(--channel) - var(--inset)); --tent-w: max(206px, 62%); position: relative; padding-bottom: calc(var(--road) / 2 + 16px); }
 .trip__road { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; max-width: none; fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 .trip__edge { stroke: var(--white); }
 .trip__tar { stroke: var(--ink); }
@@ -247,29 +258,74 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .trip__cart { position: absolute; left: 0; top: 0; z-index: 3; width: var(--cart-w); aspect-ratio: 160 / 186; transform-origin: 50% 94.6%; will-change: transform; pointer-events: none; }
 .trip__cart svg { width: 100%; height: 100%; overflow: visible; }
 .trip__cart .wheel { transform-box: fill-box; transform-origin: 50% 50%; }
-.trip__stops { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--gap); padding-top: 16px; }
+.trip__stops { position: relative; z-index: 1; display: flex; flex-direction: column; padding-top: 32px; }
 
-/* --inset keeps a tilted board's corners well away from the edge of the screen */
-.stop { width: calc(100% - var(--channel) - var(--inset)); }
+/* The billboards. --inset keeps a tilted board's corners well away from the edge of the screen. */
+.stop { position: relative; width: var(--board-w); }
+.stop + .stop { margin-top: var(--gap); }
 .stop--left { align-self: flex-start; margin-left: var(--inset); --tilt: calc(var(--lean) * -1); }
 .stop--right { align-self: flex-end; margin-right: var(--inset); --tilt: var(--lean); }
 .stop__pop { transform-origin: 50% 100%; }
 .stop__pop.is-folded { will-change: transform; }
-.stop__board { position: relative; z-index: 1; padding: 12px 12px 16px; background: var(--card); color: var(--ink); border: 5px solid var(--maroon); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); transform: rotate(var(--tilt)); transform-origin: 50% 100%; }
-.stop__frame { padding: 4px; background: var(--white); border: 3px solid var(--ink); border-radius: 8px; transform: rotate(calc(var(--tilt) * -1.5)); }
-.stop__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; }
-.stop__nophoto { display: grid; place-items: center; aspect-ratio: 4 / 3; color: var(--ink-soft); font-size: 14px; }
-.stop__words { padding-top: 12px; }
+.stop__board { position: relative; z-index: 1; padding: 8px 8px 16px; background: var(--card); color: var(--ink); border: 5px solid var(--maroon); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); transform: rotate(var(--tilt)); transform-origin: 50% 100%; }
+.stop--stickered .stop__board { padding-top: 20px; }
+.stop__frame { position: relative; aspect-ratio: 1; background: var(--white); border: 3px solid var(--ink); border-radius: 8px; transform: rotate(calc(var(--tilt) * -1)); }
+.stop__photo, .stop__nophoto { position: absolute; inset: 4px; width: calc(100% - 8px); height: calc(100% - 8px); object-fit: cover; border-radius: 4px; }
+.stop__nophoto { display: grid; place-items: center; color: var(--ink-soft); font-size: 14px; }
+.stop__words { padding: 12px 4px 0; }
 .stop__title { font: 900 32px/1 var(--display); text-transform: uppercase; letter-spacing: .005em; color: var(--maroon); }
-.stop__date { margin-top: 8px; font-size: 16px; font-weight: 700; }
+.stop__date { margin-top: 4px; font-size: 16px; font-weight: 700; }
+.stop__text { margin-top: 4px; font-size: 16px; line-height: 1.35; color: var(--ink-soft); }
 .stop__post { display: block; position: relative; width: 16px; height: var(--post); margin: 0 auto; background: #8A5230; border: 3px solid var(--ink); border-width: 0 3px 3px; border-radius: 0 0 4px 4px; }
 .stop__post::after { content: ""; position: absolute; left: 50%; bottom: -8px; z-index: -1; width: 56px; height: 12px; margin-left: -28px; border-radius: 50%; background: rgba(21, 9, 3, .16); }
 /* A stop still waiting for its real details says so with a dashed board */
 .stop--todo .stop__board { border-style: dashed; box-shadow: none; }
 .stop--todo .stop__frame { border-color: var(--line); }
+/* Stickers sit on the board's top edge, in the padding kept for them, clear of the photo and the words */
+.stop__sticker { position: absolute; z-index: 2; left: 12px; top: -28px; margin: 0; font: 900 24px/1 var(--display); text-transform: uppercase; letter-spacing: .01em; white-space: nowrap; }
+.stop__sticker--gold { padding: 8px 12px; border-radius: 8px; background: var(--gold); color: var(--ink); box-shadow: 0 0 0 3px var(--ink); transform: rotate(-5deg); }
+.stop__sticker--ribbon { padding: 6px 12px; background: var(--maroon); color: var(--cream); border: 3px solid var(--ink); transform: rotate(-3deg); }
+.stop__sticker--ribbon::before, .stop__sticker--ribbon::after { content: ""; position: absolute; bottom: -8px; z-index: -1; width: 16px; height: 100%; background: var(--maroon-deep); border: 3px solid var(--ink); }
+.stop__sticker--ribbon::before { left: -14px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 45% 50%); }
+.stop__sticker--ribbon::after { right: -14px; clip-path: polygon(0 0, 100% 0, 55% 50%, 100% 100%, 0 100%); }
 
-/* The pop-up tent the road ends at. --cart-h leaves a clear floor, so the parked cart never touches the sign. */
-.tent { --cart-h: calc(var(--cart-w) * 1.1625); position: relative; z-index: 1; width: calc(100% - var(--channel) - var(--inset)); margin-top: var(--gap); }
+/* Scenery. Each stop's scene stands on the ground beneath its board, on the side away from the road. */
+.scene { position: absolute; z-index: 1; pointer-events: none; }
+.scene.is-out { visibility: hidden; }
+.scene__in { transform-origin: 50% 100%; }
+.scene svg { width: 100%; height: auto; overflow: visible; }
+.stop .scene { top: calc(100% - var(--post) + 12px); }
+.stop .scene--party { width: 100px; }
+.stop .scene--queue { width: 112px; }
+.stop .scene--palm { width: 88px; }
+.stop--left .scene { left: 0; }
+.stop--right .scene { right: 0; }
+.scene__stack { position: relative; }
+.scene .scene__leaves { position: absolute; inset: 0; transform-origin: 47% 33%; }
+.scene--far, .scene--cloud-b { display: none; }
+.scene--cloud-a { width: 72px; }
+.scene--sea { --wave-h: 16px; width: 140px; height: 48px; }
+.scene--sea .scene__in { position: relative; height: 100%; overflow: hidden; background: var(--card); border: 4px solid var(--ink); border-radius: 999px; }
+.scene .scene__island { position: absolute; left: 24%; bottom: 20%; width: auto; height: 62%; }
+.scene .scene__wave { position: absolute; left: 0; bottom: calc(var(--wave-h) * .55); width: calc(var(--wave-h) * 30); height: var(--wave-h); max-width: none; }
+.scene .scene__wave--front { bottom: calc(var(--wave-h) * -.1); }
+.roadsign { margin: 0; padding: 4px 8px; background: var(--gold); color: var(--ink); border: 3px solid var(--ink); border-radius: 6px; font: 700 14px/1.2 var(--text); text-transform: uppercase; white-space: nowrap; }
+.scene--sign .scene__in::after { content: ""; display: block; width: 8px; height: 16px; margin: 0 auto; background: var(--ink); }
+
+/* Gentle life, only while the section is near the screen. Reduced motion stops all of it, at the end of this file. */
+.scene--cloud .scene__in { animation: cloud-drift 11s ease-in-out infinite alternate paused; will-change: transform; }
+.scene--cloud-b .scene__in, .scene--far-b .scene__in { animation-duration: 15s; animation-direction: alternate-reverse; }
+.scene .scene__leaves { animation: leaves-sway 4.5s ease-in-out infinite alternate paused; will-change: transform; }
+.scene .scene__wave { animation: wave-slide 9s linear infinite paused; will-change: transform; }
+.scene .scene__wave--front { animation-duration: 13s; animation-direction: reverse; }
+.is-near .scene__in, .is-near .scene__leaves, .is-near .scene__wave { animation-play-state: running; }
+@keyframes cloud-drift { from { transform: translateX(-12px); } to { transform: translateX(12px); } }
+@keyframes leaves-sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+@keyframes wave-slide { to { transform: translateX(-50%); } }
+
+/* The tent is the last stop, on the next side in the pattern. The road ends in front of it and never goes under it. */
+/* The extra room above the tent is for the sea, in the corner the road's last crossing leaves free */
+.tent { position: relative; z-index: 1; width: var(--tent-w); margin-top: calc(var(--gap) + 32px); }
 .tent--left { margin-left: var(--inset); }
 .tent--right { margin-left: auto; margin-right: var(--inset); }
 .tent__awning { position: relative; z-index: 2; width: 100%; height: auto; overflow: visible; }
@@ -279,23 +335,36 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .tent__frame::after { --wood: linear-gradient(90deg, var(--ink) 3px, #8A5230 3px calc(var(--pole) - 3px), var(--ink) calc(var(--pole) - 3px)); --foot: linear-gradient(var(--ink), var(--ink)); content: ""; position: absolute; inset: 0; background: var(--foot) left bottom / var(--pole) 3px no-repeat, var(--foot) right bottom / var(--pole) 3px no-repeat, var(--wood) left / var(--pole) 100% no-repeat, var(--wood) right / var(--pole) 100% no-repeat; pointer-events: none; }
 /* Its shadow on the ground, so the whole tent stands on something */
 .tent::after { content: ""; position: absolute; inset: auto 0 -8px; z-index: -1; height: 16px; border-radius: 50%; background: rgba(21, 9, 3, .16); }
-.tent__sign { position: relative; z-index: 1; margin: 0 calc(var(--pole) + 4px); padding: 12px; background: var(--card); color: var(--ink); text-align: center; border: 5px solid var(--maroon); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); }
+.tent__sign { position: relative; z-index: 1; margin: 0 calc(var(--pole) + 2px); padding: 12px 8px; background: var(--card); color: var(--ink); text-align: center; border: 5px solid var(--maroon); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); }
 /* Short ropes hang the sign from the awning */
 .tent__sign::before, .tent__sign::after { content: ""; position: absolute; top: -40px; width: 4px; height: 36px; background: var(--ink); }
 .tent__sign::before { left: 16%; }
 .tent__sign::after { right: 16%; }
-.tent__title { font: 900 40px/1 var(--display); text-transform: uppercase; letter-spacing: .005em; color: var(--maroon); }
-.tent__next { margin-top: 8px; font-size: 16px; font-weight: 700; }
+.tent__title { font: 900 36px/1 var(--display); text-transform: uppercase; letter-spacing: .005em; color: var(--maroon); }
+.tent__next { margin-top: 4px; font-size: 16px; font-weight: 700; }
 .tent__btn { margin-top: 12px; min-height: 48px; }
-.tent__floor { height: calc(var(--cart-h) - var(--road) / 2 + 24px); }
+.tent__floor { height: 28px; }
 
 /* The next section starts soon after the road ends, so the trip never trails off into a gap */
 .route-sec + .about { padding-top: calc(var(--pad-y) * .75); }
 
+@media (max-width: 389px) {
+  .stop__frame { aspect-ratio: 1 / 1.12; }
+  .roadsign { width: 78px; white-space: normal; text-align: center; }
+  .scene--sign .scene__in::after { height: 8px; }
+}
 @media (max-width: 359px) {
-  .trip { --road: 36px; --cart-w: 64px; --gap: 136px; --channel: 76px; }
+  .stop__board { padding-bottom: 12px; }
+  .stop__words { padding-inline: 0; }
+  .trip { --road: 32px; --cart-w: 56px; --gap: 136px; --channel: 68px; }
+  .scene--cloud-a { width: 56px; }
+  .stop .scene--party { width: 88px; }
+  .stop .scene--queue { width: 92px; }
+  .stop .scene--palm { width: 72px; }
+  .scene--sea { width: 124px; height: 44px; }
+  .stop__title { font-size: 28px; }
+  .stop__text { font-size: 14px; }
   .tent__frame { --pole: 12px; margin-inline: 0; }
-  .tent__sign { margin-inline: 12px; padding-inline: 8px; }
 }
 
 /* About and Find us */
@@ -403,7 +472,7 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
 /* Tablet up */
 @media (min-width: 768px) {
   :root { --gutter: 32px; --pad-y: 96px; }
-  .menu { padding-bottom: 96px; }
+  .menu { padding-bottom: 56px; }
   .menu-p1, .fam-p1, .about-p1 { display: none; }
   .h2 { font-size: 96px; }
   .h2--small { font-size: 72px; }
@@ -441,7 +510,6 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .more-p1 { width: 128px; right: max(4%, 50% - 860px); top: 64px; }
   .more-p2 { display: block; width: 160px; left: calc(50% - 88px); bottom: 32px; }
   .fam-p1 { display: block; width: 128px; right: max(4%, 50% - 860px); top: 64px; bottom: auto; }
-  .route-p1 { display: block; width: 112px; right: max(6%, 50% - 840px); top: 64px; bottom: auto; }
   .about-p1 { display: block; width: 112px; right: max(3%, 50% - 840px); top: 80px; bottom: auto; }
   .h2 { font-size: 112px; }
   .h2--small { font-size: 80px; }
@@ -449,7 +517,7 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
 
 @media (min-width: 1440px) {
   :root { --pad-y: 128px; --gutter: 48px; }
-  .menu { padding-bottom: 128px; }
+  .menu { padding-bottom: 72px; }
   .h2 { font-size: 136px; }
   .h2--small { font-size: 96px; }
   .topbar__in { padding-inline: var(--gutter) 40px; }
@@ -458,40 +526,75 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .note__text { font-size: 20px; }
 }
 
-/* The road trip gets more room to swing as the screen widens. Past 1440 the stage stays the same size and centred. */
+/* The road trip's larger layouts. Past 1440 the stage stays the same size and centred. */
 @media (min-width: 560px) {
-  .trip { --road: 44px; --cart-w: 88px; --post: 48px; --gap: 192px; --lean: 1.5deg; }
-  .stop, .tent { width: min(68%, 440px); }
-  .stop__board { display: grid; grid-template-columns: 40% 1fr; align-items: center; gap: 16px; padding: 12px 16px 12px 12px; }
-  .stop__photo, .stop__nophoto { aspect-ratio: 1; }
-  .stop__words { padding-top: 0; }
-  .stop__title { font-size: 36px; }
+  .trip { --road: 44px; --cart-w: 88px; --post: 56px; --gap: 160px; --lean: 1.25deg; --board-w: min(72%, 520px); --tent-w: min(52%, 340px); }
+  .stop__board, .stop--stickered .stop__board { display: grid; grid-template-columns: 60% 1fr; align-items: stretch; gap: 16px; padding: 12px; }
+  /* Side by side, the photo fills its column and stands at least square, or taller if the words need it */
+  .stop__frame { aspect-ratio: auto; min-width: 0; }
+  .stop__frame::before { content: ""; display: block; padding-top: 100%; }
+  .stop__words { align-self: center; padding: 0; min-width: 0; }
+  .stop--stickered .stop__words { padding-top: 16px; }
+  .stop__sticker { left: auto; right: 12px; top: -36px; }
+  .stop__title { font-size: 28px; }
+  .stop .scene--party { width: 128px; }
+  .stop .scene--queue { width: 176px; }
+  .stop .scene--palm { width: 128px; }
+  .scene--cloud-a { width: 96px; }
+  .scene--sea { --wave-h: 20px; width: 208px; height: 64px; }
   .tent__title { font-size: 48px; }
   .tent__next { font-size: 18px; }
   .tent__btn { min-height: 56px; }
 }
+@media (min-width: 768px) {
+  .stop .scene--party { width: 152px; }
+  .stop__title { font-size: 36px; }
+}
 @media (min-width: 900px) {
-  .trip { --road: 56px; --dash: 6px; --cart-w: 120px; --post: 56px; --gap: 216px; }
-  .trip__stops { padding-top: 24px; }
-  .stop, .stop--left, .stop--right { width: 44%; margin-inline: 3%; }
-  .stop__title { font-size: 40px; }
+  .roadsign { padding: 4px 12px; font: 900 32px/1 var(--display); }
+  .scene--sign .scene__in::after { height: 32px; }
+}
+@media (min-width: 1024px) {
+  .trip { --road: 48px; --dash: 6px; --cart-w: 88px; --post: 56px; --gap: -96px; --inset: 16px; --board-w: min(500px, calc(50% - 104px)); --tent-w: calc(var(--board-w) * .88); }
+  .stop__title { font-size: 28px; }
+  .stop__board, .stop--stickered .stop__board { padding: 12px; }
+  .stop .scene--party { width: 136px; }
+  .stop .scene--queue { width: 152px; }
+  .stop .scene--palm { width: 176px; }
+  .tent { margin-top: var(--gap); }
+  .scene--cloud-a { width: 136px; }
+  .scene--cloud-b { display: block; width: 104px; }
+  .scene--sea { --wave-h: 24px; width: 320px; height: 80px; }
+  .tent__frame { --pole: 16px; padding-top: calc(7% + 32px); }
+  .tent__sign { margin-inline: 24px; padding: 16px; }
+  .tent__sign::before, .tent__sign::after { top: -48px; height: 44px; }
+  .tent__title { font-size: 48px; }
+  .tent__btn { font-size: 28px; }
+}
+@media (min-width: 1200px) {
+  .trip { --road: 52px; --cart-w: 96px; --post: 64px; --gap: -112px; }
+  .stop__title { font-size: 36px; }
   .stop__date { font-size: 18px; }
-  .tent, .tent--left, .tent--right { width: min(52%, 640px); margin-inline: auto; }
-  .tent__frame { --pole: 18px; padding-top: calc(7% + 40px); }
-  .tent__sign { margin-inline: 40px; padding: 16px 24px 24px; }
-  .tent__sign::before, .tent__sign::after { top: -56px; height: 52px; }
-  .tent__title { font-size: 64px; }
-  .tent__next { font-size: 20px; }
-  .tent__btn { font-size: 32px; min-height: 64px; }
+  .stop__board, .stop--stickered .stop__board { padding: 16px; }
+  .stop .scene--party { width: 152px; }
+  .stop .scene--queue { width: 176px; }
+  .stop .scene--palm { width: 200px; }
+  .scene--cloud-a { width: 176px; }
+  .scene--cloud-b { width: 128px; }
+  .scene--sea { width: 400px; height: 88px; }
+  .tent__title { font-size: 56px; }
 }
 @media (min-width: 1440px) {
-  .trip { --road: 64px; --cart-w: 136px; --post: 64px; --gap: 232px; }
-  .stop { max-width: 580px; }
-  .stop__title { font-size: 48px; }
-  .stop__board { gap: 24px; padding: 16px 24px 16px 16px; }
+  .trip { --road: 56px; --cart-w: 112px; --gap: -128px; --board-w: 500px; }
+  .stop .scene--party { width: 176px; }
+  .stop .scene--queue { width: 200px; }
+  .stop .scene--palm { width: 224px; }
+  .stop__title { font-size: 40px; }
 }
 @media (min-width: 1920px) {
-  .route-p2 { display: block; width: 160px; left: max(3%, 50% - 900px); bottom: 96px; }
+  .scene--far { display: block; z-index: 0; }
+  .scene--far-a { left: max(24px, calc(50% - 1040px)); top: 160px; width: 240px; }
+  .scene--far-b { right: max(24px, calc(50% - 1000px)); top: 720px; width: 200px; }
 }
 
 /* Wide burger shadow only where it stays cheap to draw */
@@ -501,6 +604,6 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
-  .piece, .wave__svg, .trip__cart { will-change: auto; }
-  .btn:hover, .card:hover .card__photo, .card:hover .card__strip { transform: none; }
+  .piece, .wave__svg, .trip__cart, .scene__in, .scene .scene__leaves, .scene .scene__wave, .scene--cloud .scene__in { will-change: auto; }
+  .btn:hover, .card:hover .card__photo, .card:hover .card__strip, .menu-cta__btn:hover svg { transform: none; }
 }

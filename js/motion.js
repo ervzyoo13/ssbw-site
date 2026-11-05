@@ -3,6 +3,7 @@
 
 import { scroller } from './scroller.js';
 import { trip } from './route.js';
+import { pieceReach, pieceDepth } from './pieces.js';
 
 const ready = () => document.documentElement.classList.remove('js-wait');
 // Resolves when the first-visit preloader has cleared, or at once if it isn't showing or its script failed.
@@ -68,6 +69,7 @@ function fullMotion(gsap, ScrollTrigger) {
     tl.to(s, { scale: 1, rotation: rotOf(s), opacity: 1, duration: 0.8, ease: 'back.out(1.8)' }, 1.5 + i * 0.16);
   });
   tl.to(cta, { opacity: 1, y: 0, duration: 1 }, 1.0);
+  const introPlayed = new Promise((resolve) => tl.eventCallback('onComplete', resolve));
   introGate().then(() => tl.play());
 
   /* Hero on scroll: the burger trails the text and turns a few degrees */
@@ -97,10 +99,9 @@ function fullMotion(gsap, ScrollTrigger) {
   });
 
   /* Ingredient pieces: slow parallax, phones move less */
-  const phone = window.innerWidth < 768;
-  const reach = phone ? 28 : 72;
+  const reach = pieceReach();
   gsap.utils.toArray('.piece').forEach((piece, i) => {
-    const depth = Number((phone && piece.dataset.depthPhone) || piece.dataset.depth) || 1;
+    const depth = pieceDepth(piece);
     gsap.fromTo(piece, { y: -reach * depth, rotation: i % 2 ? -10 : 8 }, {
       y: reach * depth,
       rotation: i % 2 ? 12 : -10,
@@ -145,12 +146,16 @@ function fullMotion(gsap, ScrollTrigger) {
   const standing = new Set();
   gsap.set(boards, { rotationX: 86, transformPerspective: 900, transformOrigin: '50% 100%' });
   boards.forEach((b) => b.classList.add('is-folded'));
+  // A board's sticker and its little roadside scene wait to pop up with it
+  const extras = (board) => [...board.closest('.stop').querySelectorAll('.stop__sticker, .scene__in')];
+  boards.forEach((b) => gsap.set(extras(b), { scale: 0 }));
   const popUp = (board) => {
     standing.add(board);
     gsap.timeline({ onComplete: () => { board.classList.remove('is-folded'); gsap.set(board, { clearProps: 'transform' }); } })
       .to(board, { rotationX: -12, duration: 0.38, ease: 'power2.out' })
       .to(board, { rotationX: 5, duration: 0.16, ease: 'sine.inOut' })
-      .to(board, { rotationX: 0, duration: 0.16, ease: 'sine.inOut' });
+      .to(board, { rotationX: 0, duration: 0.16, ease: 'sine.inOut' })
+      .to(extras(board), { scale: 1, duration: 0.5, ease: 'back.out(2)', stagger: 0.08, clearProps: 'transform' }, 0.22);
   };
   let arrived = false;
   const drive = (p) => {
@@ -176,23 +181,28 @@ function fullMotion(gsap, ScrollTrigger) {
   window.addEventListener('waves:rebuilt', () => ScrollTrigger.refresh());
 
   window.addEventListener('load', () => ScrollTrigger.refresh());
+  return introPlayed;
 }
 
 function reducedMotion(gsap) {
   gsap.set('.hero__stage, [data-hero-cta]', { opacity: 0 });
   ready();
-  introGate().then(() => gsap.to('.hero__stage, [data-hero-cta]', { opacity: 1, duration: 0.8, ease: 'none' }));
+  const introPlayed = new Promise((resolve) => {
+    introGate().then(() => gsap.to('.hero__stage, [data-hero-cta]', { opacity: 1, duration: 0.8, ease: 'none', onComplete: resolve }));
+  });
   // The road trip gets no motion at all: route.js leaves the boards standing and the cart parked at the tent.
   gsap.utils.toArray('.card, .sec-head, .service, .note').forEach((el) => {
     gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'none', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
   });
+  return introPlayed;
 }
 
+// Returns a promise that resolves once the hero intro has played.
 export function initMotion() {
   const { gsap, ScrollTrigger } = window;
-  if (!gsap || !ScrollTrigger) { ready(); return; }
+  if (!gsap || !ScrollTrigger) { ready(); return introGate(); }
   gsap.registerPlugin(ScrollTrigger);
   ScrollTrigger.config({ ignoreMobileResize: true });
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) reducedMotion(gsap);
-  else fullMotion(gsap, ScrollTrigger);
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return reducedMotion(gsap);
+  return fullMotion(gsap, ScrollTrigger);
 }
