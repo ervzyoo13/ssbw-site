@@ -2,7 +2,7 @@
 // prefers-reduced-motion gets no parallax, no drift, no smooth scroll, and simple fades only.
 
 import { scroller } from './scroller.js';
-import { routeTable } from './route.js';
+import { trip } from './route.js';
 
 const ready = () => document.documentElement.classList.remove('js-wait');
 // Resolves when the first-visit preloader has cleared, or at once if it isn't showing or its script failed.
@@ -139,31 +139,40 @@ function fullMotion(gsap, ScrollTrigger) {
     });
   });
 
-  /* The little burger follows the route */
-  const marker = document.querySelector('.route__marker');
-  const map = document.getElementById('route-map');
-  const setX = gsap.quickSetter(marker, 'x', 'px');
-  const setY = gsap.quickSetter(marker, 'y', 'px');
-  const setR = gsap.quickSetter(marker, 'rotation', 'deg');
-  const place = (p) => {
-    const t = routeTable();
-    if (!t.length) return;
-    const f = p * (t.length - 1);
-    const i = Math.min(Math.floor(f), t.length - 2);
-    const k = f - i;
-    setX(t[i][0] + (t[i + 1][0] - t[i][0]) * k);
-    setY(t[i][1] + (t[i + 1][1] - t[i][1]) * k);
-    setR(Math.sin(p * 18) * 8);
+  /* The road trip: the cart drives on scroll, and each board stands up as the cart reaches it, then stays up */
+  const boards = gsap.utils.toArray('.stop__pop');
+  const sign = document.getElementById('tent-sign');
+  const standing = new Set();
+  gsap.set(boards, { rotationX: 86, transformPerspective: 900, transformOrigin: '50% 100%' });
+  boards.forEach((b) => b.classList.add('is-folded'));
+  const popUp = (board) => {
+    standing.add(board);
+    gsap.timeline({ onComplete: () => { board.classList.remove('is-folded'); gsap.set(board, { clearProps: 'transform' }); } })
+      .to(board, { rotationX: -12, duration: 0.38, ease: 'power2.out' })
+      .to(board, { rotationX: 5, duration: 0.16, ease: 'sine.inOut' })
+      .to(board, { rotationX: 0, duration: 0.16, ease: 'sine.inOut' });
+  };
+  let arrived = false;
+  const drive = (p) => {
+    trip.p = p;
+    const u = p * trip.total;
+    trip.place(u);
+    boards.forEach((b, i) => { if (!standing.has(b) && u >= trip.pops[i]) popUp(b); });
+    if (!arrived && p >= 0.995) {
+      arrived = true;
+      gsap.fromTo(sign, { rotation: -3 }, { rotation: 0, duration: 1.4, ease: 'elastic.out(1, 0.35)', transformOrigin: '50% 0%', clearProps: 'transform' });
+    }
   };
   const state = { p: 0 };
+  trip.driving = true;
+  drive(0);
   gsap.to(state, {
     p: 1,
     ease: 'none',
-    onUpdate: () => place(state.p),
-    scrollTrigger: { trigger: map, start: 'top 72%', end: 'bottom 72%', scrub: 0.8 },
+    onUpdate: () => drive(state.p),
+    scrollTrigger: { start: () => trip.range().start, end: () => trip.range().end, scrub: 0.8 },
   });
-  place(0);
-  window.addEventListener('route:drawn', () => place(state.p));
+  window.addEventListener('route:drawn', () => ScrollTrigger.refresh());
   window.addEventListener('waves:rebuilt', () => ScrollTrigger.refresh());
 
   window.addEventListener('load', () => ScrollTrigger.refresh());
@@ -173,7 +182,8 @@ function reducedMotion(gsap) {
   gsap.set('.hero__stage, [data-hero-cta]', { opacity: 0 });
   ready();
   introGate().then(() => gsap.to('.hero__stage, [data-hero-cta]', { opacity: 1, duration: 0.8, ease: 'none' }));
-  gsap.utils.toArray('.card, .sec-head, .service, .note, .stop').forEach((el) => {
+  // The road trip gets no motion at all: route.js leaves the boards standing and the cart parked at the tent.
+  gsap.utils.toArray('.card, .sec-head, .service, .note').forEach((el) => {
     gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'none', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
   });
 }

@@ -68,17 +68,28 @@ function renderReviews(d) {
     </li>`).join('');
 }
 
+// The road trip: signboards take turns left and right, and the tent stays on the side of the last board.
 function renderRoute(d) {
-  $('route-title').textContent = d.route.title;
-  $('route-stops').innerHTML = d.route.stops.map((s) => `
-    <li class="stop">
-      <div class="stop__pin">${photoTag(s.photo, 'stop__photo')}</div>
-      <div class="stop__body">
-        <h3 class="stop__title">${s.title ? words(s.title) : ph('EVENT')}</h3>
-        <p class="stop__date">${val(s.date, 'DATE')}</p>
-        ${s.text ? `<p class="stop__text">${esc(s.text)}</p>` : ''}
+  const { title, stops, finish } = d.route;
+  const { date, place } = d.settings.nextPopUp;
+  $('route-title').textContent = title;
+  $('route-stops').innerHTML = stops.map((s, i) => `
+    <li class="stop stop--${i % 2 ? 'right' : 'left'}${s.title && s.date ? '' : ' stop--todo'}">
+      <div class="stop__pop">
+        <div class="stop__board">
+          <div class="stop__frame">${s.photo ? photoTag(s.photo, 'stop__photo') : `<div class="stop__nophoto">${ph('PHOTO')}</div>`}</div>
+          <div class="stop__words">
+            <h3 class="stop__title">${s.title ? words(s.title) : ph('EVENT')}</h3>
+            <p class="stop__date">${val(s.date, 'DATE')}</p>
+          </div>
+        </div>
+        <span class="stop__post" aria-hidden="true"></span>
       </div>
     </li>`).join('');
+  $('tent').classList.add(`tent--${stops.length % 2 ? 'left' : 'right'}`);
+  $('tent-title').textContent = finish.sign;
+  $('tent-next').innerHTML = `${val(date, 'DATE')} at ${val(place, 'PLACE')}`;
+  $('tent-btn').textContent = finish.button;
 }
 
 function renderAbout(d) {

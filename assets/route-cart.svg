@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -6 160 186">
+  <title>SimSim food cart, TEMP drawing. See docs/IMAGES.md to swap it for another SVG.</title>
+
+  <!-- White sticker edge, so the cart and its dark wheels stay clear of the near-black road -->
+  <g fill="#FFFFFF" stroke="#FFFFFF" stroke-width="13" stroke-linejoin="round">
+    <path d="M52 23C52 9 64 2 80 2C96 2 108 9 108 23V42C108 46 104 48 100 48H60C56 48 52 46 52 42Z"/>
+    <path d="M28 46H132L150 70A11.67 11.67 0 0 1 126.67 70A11.67 11.67 0 0 1 103.33 70A11.67 11.67 0 0 1 80 70A11.67 11.67 0 0 1 56.67 70A11.67 11.67 0 0 1 33.33 70A11.67 11.67 0 0 1 10 70Z"/>
+    <rect x="20" y="70" width="120" height="76" rx="6"/>
+    <circle cx="50" cy="152" r="18"/>
+    <circle cx="110" cy="152" r="18"/>
+  </g>
+
+  <!-- Window, posts and counter -->
+  <rect x="24" y="66" width="112" height="30" fill="#3A1210"/>
+  <path d="M26 66V94M134 66V94" fill="none" stroke="#150903" stroke-width="6"/>
+
+  <!-- Maroon body with the SSBW. wordmark (TEMP wordmark, same drawing as the top bar) -->
+  <rect x="20" y="94" width="120" height="52" rx="6" fill="#8C2421" stroke="#150903" stroke-width="5"/>
+  <path d="M23 136H137V140C137 142 135 144 133 144H27C25 144 23 142 23 140Z" fill="#741C1A"/>
+  <g transform="translate(30 105) scale(.1087)" color="#F6E9D6">
+    <g fill="none" stroke="currentColor" stroke-width="52" stroke-linejoin="round">
+      <path d="M180 26H62A32 32 0 0 0 62 90H128A32 32 0 0 1 128 154H10"/>
+      <path d="M382 26H264A32 32 0 0 0 264 90H330A32 32 0 0 1 330 154H212"/>
+    </g>
+    <path fill="currentColor" fill-rule="evenodd" d="M404 0H536C574 0 594 18 594 46C594 66 584 80 566 88C588 96 600 112 600 134C600 164 576 180 538 180H404ZM466 44V64H522C530 64 534 60 534 54C534 48 530 44 522 44ZM466 112V140H526C536 140 540 133 540 125C540 118 536 112 526 112Z"/>
+    <path fill="currentColor" d="M610 0H672L686 98L702 0H762L778 98L792 0H854L816 180H760L732 70L704 180H648Z"/>
+    <circle fill="currentColor" cx="889" cy="153" r="27"/>
+  </g>
+  <rect x="14" y="89" width="132" height="8" rx="4" fill="#8A5230" stroke="#150903" stroke-width="4"/>
+
+  <!-- Gold awning with a scalloped edge -->
+  <path d="M28 46H132L150 70A11.67 11.67 0 0 1 126.67 70A11.67 11.67 0 0 1 103.33 70A11.67 11.67 0 0 1 80 70A11.67 11.67 0 0 1 56.67 70A11.67 11.67 0 0 1 33.33 70A11.67 11.67 0 0 1 10 70Z" fill="#D7B151"/>
+  <g fill="#F0DCA0">
+    <path d="M45.33 46H62.67L56.67 70A11.67 11.67 0 0 1 33.33 70Z"/>
+    <path d="M80 46H97.33L103.33 70A11.67 11.67 0 0 1 80 70Z"/>
+    <path d="M114.67 46H132L150 70A11.67 11.67 0 0 1 126.67 70Z"/>
+  </g>
+  <path d="M28 46H132L150 70A11.67 11.67 0 0 1 126.67 70A11.67 11.67 0 0 1 103.33 70A11.67 11.67 0 0 1 80 70A11.67 11.67 0 0 1 56.67 70A11.67 11.67 0 0 1 33.33 70A11.67 11.67 0 0 1 10 70Z" fill="none" stroke="#150903" stroke-width="5" stroke-linejoin="round"/>
+
+  <!-- The burger on the roof -->
+  <g stroke="#150903" stroke-width="4" stroke-linejoin="round">
+    <rect x="56" y="36" width="48" height="11" rx="5.5" fill="#E7A94F"/>
+    <rect x="53" y="29" width="54" height="9" rx="4.5" fill="#5A2F18"/>
+    <path d="M55 27H105L98 35L90 30L78 37L68 30L60 34Z" fill="#E9B13C" stroke-width="3"/>
+    <path d="M50 26C52 20 58 22 60 24C63 20 68 20 70 24C73 20 78 20 80 24C83 20 88 20 90 24C93 20 98 20 100 24C102 22 108 20 110 26C110 30 104 30 100 29C96 32 92 32 90 29C86 32 84 32 80 29C76 32 74 32 70 29C66 32 64 32 60 29C56 30 50 30 50 26Z" fill="#7FA63C" stroke-width="3"/>
+    <path d="M52 22C52 9 64 2 80 2C96 2 108 9 108 22C108 24 106 25 104 25H56C54 25 52 24 52 22Z" fill="#E7A94F"/>
+  </g>
+  <g fill="#F3DFB5" stroke="#B08A4A" stroke-width=".8">
+    <ellipse cx="62" cy="13" rx="2.4" ry="1.6" transform="rotate(-30 62 13)"/>
+    <ellipse cx="70" cy="7.5" rx="2.4" ry="1.6" transform="rotate(-14 70 7.5)"/>
+    <ellipse cx="90" cy="7.5" rx="2.4" ry="1.6" transform="rotate(14 90 7.5)"/>
+    <ellipse cx="98" cy="13" rx="2.4" ry="1.6" transform="rotate(30 98 13)"/>
+  </g>
+  <circle cx="72" cy="14" r="2.8" fill="#150903"/>
+  <circle cx="88" cy="14" r="2.8" fill="#150903"/>
+  <path d="M75 18.5Q80 22.5 85 18.5" fill="none" stroke="#150903" stroke-width="2.4" stroke-linecap="round"/>
+
+  <!-- Wheels. Any group with class="wheel" turns as the cart drives (js/route.js) -->
+  <g class="wheel">
+    <circle cx="50" cy="152" r="18" fill="#150903"/>
+    <circle cx="50" cy="152" r="11" fill="#D7B151"/>
+    <path d="M50 141V163M39 152H61M42.2 144.2L57.8 159.8M42.2 159.8L57.8 144.2" stroke="#150903" stroke-width="2.6"/>
+    <circle cx="50" cy="152" r="3.6" fill="#8C2421"/>
+  </g>
+  <g class="wheel">
+    <circle cx="110" cy="152" r="18" fill="#150903"/>
+    <circle cx="110" cy="152" r="11" fill="#D7B151"/>
+    <path d="M110 141V163M99 152H121M102.2 144.2L117.8 159.8M102.2 159.8L117.8 144.2" stroke="#150903" stroke-width="2.6"/>
+    <circle cx="110" cy="152" r="3.6" fill="#8C2421"/>
+  </g>
+</svg>

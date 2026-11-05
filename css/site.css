@@ -78,7 +78,8 @@ section:focus { outline: none; }
 
 /* Line reveal masks, made by js/motion.js */
 .is-split { display: flex; flex-direction: column; }
-.lm { display: block; overflow: hidden; padding-block: .08em; margin-block: -.08em; }
+/* The mask has room on every side, so it only ever hides what is sliding up and never shaves a letter's edge. */
+.lm { display: block; overflow: hidden; padding: .08em; margin: -.08em; }
 .li { display: block; }
 .w { white-space: nowrap; }
 
@@ -192,8 +193,7 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .more-p1 { width: 72px; right: -16px; top: 32px; }
 .more-p2 { display: none; }
 .fam-p1 { width: 72px; right: -24px; bottom: 8px; }
-.route-p1 { width: 72px; right: -8px; bottom: 8px; }
-.route-p2 { display: none; }
+.route-p1, .route-p2 { display: none; }
 .about-p1 { width: 56px; right: -8px; bottom: 8px; }
 
 /* Menu */
@@ -235,20 +235,68 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .note__text { font-size: 18px; font-weight: 500; }
 .note__name { color: var(--ink-soft); }
 
-/* Pop-up route */
-.route { position: relative; }
-.route__path { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; max-width: none; }
-.route__path path { stroke: var(--maroon); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 10 16; }
-.route__marker { position: absolute; left: 0; top: 0; z-index: 0; width: 64px; height: 64px; margin: -32px 0 0 -32px; will-change: transform; pointer-events: none; }
-.route__stops { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 56px; padding-block: 56px; }
-.route-sec { padding-top: 0; }
-.stop { width: 80%; padding: 8px 8px 16px; background: var(--card); color: var(--ink); border-radius: 16px; box-shadow: 0 8px 0 rgba(140, 36, 33, .12); transform: rotate(var(--tilt, -1deg)); }
-.stop:nth-child(even) { align-self: flex-end; --tilt: 1deg; }
-.stop__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; }
-.stop__body { padding: 16px 8px 0; }
-.stop__title { font: 700 32px/1 var(--display); text-transform: uppercase; color: var(--maroon); }
-.stop__date { margin-top: 8px; font-size: 14px; font-weight: 700; }
-.stop__text { margin-top: 8px; }
+/* The SimSim Road Trip (S-030). Stays on cream. js/route.js draws the road from where the boards really are.
+   The road only crosses in the gaps between boards, so --gap has to leave room for the cart to pass. */
+.route-sec { padding-top: 0; padding-bottom: 0; }
+.route-sec .sec-head { margin-bottom: 8px; }
+.trip { --road: 40px; --dash: 4px; --cart-w: 72px; --post: 44px; --gap: 144px; --channel: clamp(76px, 28%, 104px); --inset: 4px; --lean: 1deg; position: relative; padding-bottom: calc(var(--road) + 16px); }
+.trip__road { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; max-width: none; fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+.trip__edge { stroke: var(--white); }
+.trip__tar { stroke: var(--ink); }
+.trip__dash { stroke: var(--gold); }
+.trip__cart { position: absolute; left: 0; top: 0; z-index: 3; width: var(--cart-w); aspect-ratio: 160 / 186; transform-origin: 50% 94.6%; will-change: transform; pointer-events: none; }
+.trip__cart svg { width: 100%; height: 100%; overflow: visible; }
+.trip__cart .wheel { transform-box: fill-box; transform-origin: 50% 50%; }
+.trip__stops { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--gap); padding-top: 16px; }
+
+/* --inset keeps a tilted board's corners well away from the edge of the screen */
+.stop { width: calc(100% - var(--channel) - var(--inset)); }
+.stop--left { align-self: flex-start; margin-left: var(--inset); --tilt: calc(var(--lean) * -1); }
+.stop--right { align-self: flex-end; margin-right: var(--inset); --tilt: var(--lean); }
+.stop__pop { transform-origin: 50% 100%; }
+.stop__pop.is-folded { will-change: transform; }
+.stop__board { position: relative; z-index: 1; padding: 12px 12px 16px; background: var(--card); color: var(--ink); border: 5px solid var(--maroon); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); transform: rotate(var(--tilt)); transform-origin: 50% 100%; }
+.stop__frame { padding: 4px; background: var(--white); border: 3px solid var(--ink); border-radius: 8px; transform: rotate(calc(var(--tilt) * -1.5)); }
+.stop__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; }
+.stop__nophoto { display: grid; place-items: center; aspect-ratio: 4 / 3; color: var(--ink-soft); font-size: 14px; }
+.stop__words { padding-top: 12px; }
+.stop__title { font: 900 32px/1 var(--display); text-transform: uppercase; letter-spacing: .005em; color: var(--maroon); }
+.stop__date { margin-top: 8px; font-size: 16px; font-weight: 700; }
+.stop__post { display: block; position: relative; width: 16px; height: var(--post); margin: 0 auto; background: #8A5230; border: 3px solid var(--ink); border-width: 0 3px 3px; border-radius: 0 0 4px 4px; }
+.stop__post::after { content: ""; position: absolute; left: 50%; bottom: -8px; z-index: -1; width: 56px; height: 12px; margin-left: -28px; border-radius: 50%; background: rgba(21, 9, 3, .16); }
+/* A stop still waiting for its real details says so with a dashed board */
+.stop--todo .stop__board { border-style: dashed; box-shadow: none; }
+.stop--todo .stop__frame { border-color: var(--line); }
+
+/* The pop-up tent the road ends at. --cart-h leaves a clear floor, so the parked cart never touches the sign. */
+.tent { --cart-h: calc(var(--cart-w) * 1.1625); position: relative; z-index: 1; width: calc(100% - var(--channel) - var(--inset)); margin-top: var(--gap); }
+.tent--left { margin-left: var(--inset); }
+.tent--right { margin-left: auto; margin-right: var(--inset); }
+.tent__awning { position: relative; z-index: 2; width: 100%; height: auto; overflow: visible; }
+.tent__frame { --pole: 14px; position: relative; margin: -7% 3% 0; padding-top: calc(7% + 24px); }
+/* The shade inside the tent, then its two wooden poles */
+.tent__frame::before { content: ""; position: absolute; inset: 0 calc(var(--pole) / 2); background: rgba(140, 36, 33, .1); }
+.tent__frame::after { --wood: linear-gradient(90deg, var(--ink) 3px, #8A5230 3px calc(var(--pole) - 3px), var(--ink) calc(var(--pole) - 3px)); --foot: linear-gradient(var(--ink), var(--ink)); content: ""; position: absolute; inset: 0; background: var(--foot) left bottom / var(--pole) 3px no-repeat, var(--foot) right bottom / var(--pole) 3px no-repeat, var(--wood) left / var(--pole) 100% no-repeat, var(--wood) right / var(--pole) 100% no-repeat; pointer-events: none; }
+/* Its shadow on the ground, so the whole tent stands on something */
+.tent::after { content: ""; position: absolute; inset: auto 0 -8px; z-index: -1; height: 16px; border-radius: 50%; background: rgba(21, 9, 3, .16); }
+.tent__sign { position: relative; z-index: 1; margin: 0 calc(var(--pole) + 4px); padding: 12px; background: var(--card); color: var(--ink); text-align: center; border: 5px solid var(--maroon); border-radius: 16px; box-shadow: 0 6px 0 var(--ink); }
+/* Short ropes hang the sign from the awning */
+.tent__sign::before, .tent__sign::after { content: ""; position: absolute; top: -40px; width: 4px; height: 36px; background: var(--ink); }
+.tent__sign::before { left: 16%; }
+.tent__sign::after { right: 16%; }
+.tent__title { font: 900 40px/1 var(--display); text-transform: uppercase; letter-spacing: .005em; color: var(--maroon); }
+.tent__next { margin-top: 8px; font-size: 16px; font-weight: 700; }
+.tent__btn { margin-top: 12px; min-height: 48px; }
+.tent__floor { height: calc(var(--cart-h) - var(--road) / 2 + 24px); }
+
+/* The next section starts soon after the road ends, so the trip never trails off into a gap */
+.route-sec + .about { padding-top: calc(var(--pad-y) * .75); }
+
+@media (max-width: 359px) {
+  .trip { --road: 36px; --cart-w: 64px; --gap: 136px; --channel: 76px; }
+  .tent__frame { --pole: 12px; margin-inline: 0; }
+  .tent__sign { margin-inline: 12px; padding-inline: 8px; }
+}
 
 /* About and Find us */
 .about__grid { display: grid; gap: 48px; }
@@ -356,7 +404,7 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
 @media (min-width: 768px) {
   :root { --gutter: 32px; --pad-y: 96px; }
   .menu { padding-bottom: 96px; }
-  .menu-p1, .fam-p1, .route-p1, .about-p1 { display: none; }
+  .menu-p1, .fam-p1, .about-p1 { display: none; }
   .h2 { font-size: 96px; }
   .h2--small { font-size: 72px; }
   .cards { gap: 24px 16px; }
@@ -368,12 +416,6 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .notes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
   .notes .note:nth-child(2) { margin-top: 48px; }
   .notes .note:nth-child(3) { margin-top: 16px; }
-  .stop { width: 48%; display: grid; grid-template-columns: 176px 1fr; align-items: center; gap: 8px; padding: 8px; }
-  .stop__pin { position: relative; height: 100%; min-height: 176px; }
-  .stop__photo { position: absolute; inset: 0; height: 100%; aspect-ratio: auto; }
-  .stop__body { padding: 8px 16px; }
-  .route__stops { gap: 24px; padding-block: 64px; }
-  .route__marker { width: 88px; height: 88px; margin: -44px 0 0 -44px; }
   .about__grid { grid-template-columns: 7fr 5fr; gap: 64px; }
   .footer { padding-top: 64px; }
   .footer__top { grid-template-columns: auto auto 1fr; gap: 64px; align-items: start; }
@@ -400,7 +442,6 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .more-p2 { display: block; width: 160px; left: calc(50% - 88px); bottom: 32px; }
   .fam-p1 { display: block; width: 128px; right: max(4%, 50% - 860px); top: 64px; bottom: auto; }
   .route-p1 { display: block; width: 112px; right: max(6%, 50% - 840px); top: 64px; bottom: auto; }
-  .route-p2 { display: block; width: 160px; left: max(3%, 50% - 900px); bottom: 96px; }
   .about-p1 { display: block; width: 112px; right: max(3%, 50% - 840px); top: 80px; bottom: auto; }
   .h2 { font-size: 112px; }
   .h2--small { font-size: 80px; }
@@ -415,9 +456,42 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .service__name { font-size: 64px; }
   .note { padding: 32px; }
   .note__text { font-size: 20px; }
+}
+
+/* The road trip gets more room to swing as the screen widens. Past 1440 the stage stays the same size and centred. */
+@media (min-width: 560px) {
+  .trip { --road: 44px; --cart-w: 88px; --post: 48px; --gap: 192px; --lean: 1.5deg; }
+  .stop, .tent { width: min(68%, 440px); }
+  .stop__board { display: grid; grid-template-columns: 40% 1fr; align-items: center; gap: 16px; padding: 12px 16px 12px 12px; }
+  .stop__photo, .stop__nophoto { aspect-ratio: 1; }
+  .stop__words { padding-top: 0; }
+  .stop__title { font-size: 36px; }
+  .tent__title { font-size: 48px; }
+  .tent__next { font-size: 18px; }
+  .tent__btn { min-height: 56px; }
+}
+@media (min-width: 900px) {
+  .trip { --road: 56px; --dash: 6px; --cart-w: 120px; --post: 56px; --gap: 216px; }
+  .trip__stops { padding-top: 24px; }
+  .stop, .stop--left, .stop--right { width: 44%; margin-inline: 3%; }
   .stop__title { font-size: 40px; }
-  .stop { grid-template-columns: 240px 1fr; }
-  .stop__pin { min-height: 208px; }
+  .stop__date { font-size: 18px; }
+  .tent, .tent--left, .tent--right { width: min(52%, 640px); margin-inline: auto; }
+  .tent__frame { --pole: 18px; padding-top: calc(7% + 40px); }
+  .tent__sign { margin-inline: 40px; padding: 16px 24px 24px; }
+  .tent__sign::before, .tent__sign::after { top: -56px; height: 52px; }
+  .tent__title { font-size: 64px; }
+  .tent__next { font-size: 20px; }
+  .tent__btn { font-size: 32px; min-height: 64px; }
+}
+@media (min-width: 1440px) {
+  .trip { --road: 64px; --cart-w: 136px; --post: 64px; --gap: 232px; }
+  .stop { max-width: 580px; }
+  .stop__title { font-size: 48px; }
+  .stop__board { gap: 24px; padding: 16px 24px 16px 16px; }
+}
+@media (min-width: 1920px) {
+  .route-p2 { display: block; width: 160px; left: max(3%, 50% - 900px); bottom: 96px; }
 }
 
 /* Wide burger shadow only where it stays cheap to draw */
@@ -427,7 +501,6 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
-  .piece, .wave__svg, .route__marker { will-change: auto; }
-  .route__marker { display: none; }
+  .piece, .wave__svg, .trip__cart { will-change: auto; }
   .btn:hover, .card:hover .card__photo, .card:hover .card__strip { transform: none; }
 }

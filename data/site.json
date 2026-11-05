@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 1,
+    "version": 2,
     "updated": "2026-11-06",
     "note": "Everything the page shows comes from this file. null means unknown: the page shows a marked placeholder. See docs/DATA.md."
   },
@@ -149,10 +149,14 @@
   },
   "route": {
     "title": "Onto the next pop-up",
+    "finish": {
+      "sign": "Next stop?",
+      "button": "Pre-order now"
+    },
     "stops": [
       {
         "title": "Another successful Pica-Pica",
-        "date": "Post dated August 10",
+        "date": "Aug 10",
         "text": "A wedding spread of mini burgers and tacos.",
         "photo": {
           "src": "assets/img/temp/t9-tiered-tacos.webp",
@@ -163,7 +167,7 @@
       },
       {
         "title": "141 buns. Gone.",
-        "date": "Post dated September 27",
+        "date": "Sep 27",
         "text": "141 buns sold. Same love. Same hungry Fam.",
         "photo": {
           "src": "assets/img/temp/t3-chicken-burger.webp",

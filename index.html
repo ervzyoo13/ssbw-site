@@ -41,6 +41,22 @@
       <circle fill="currentColor" cx="889" cy="153" r="27"/>
     </symbol>
 
+    <!-- The pop-up tent's scalloped awning at the end of the road -->
+    <symbol id="tent-awning" viewBox="0 -16 400 130">
+      <circle cx="200" cy="-1" r="15" fill="#FFFFFF"/>
+      <path fill="#FFFFFF" stroke="#FFFFFF" stroke-width="16" stroke-linejoin="round" d="M176 10H224L388 84A20.89 20.89 0 0 1 346.22 84A20.89 20.89 0 0 1 304.44 84A20.89 20.89 0 0 1 262.67 84A20.89 20.89 0 0 1 220.89 84A20.89 20.89 0 0 1 179.11 84A20.89 20.89 0 0 1 137.33 84A20.89 20.89 0 0 1 95.56 84A20.89 20.89 0 0 1 53.78 84A20.89 20.89 0 0 1 12 84Z"/>
+      <path fill="#8C2421" d="M176 10H224L388 84A20.89 20.89 0 0 1 346.22 84A20.89 20.89 0 0 1 304.44 84A20.89 20.89 0 0 1 262.67 84A20.89 20.89 0 0 1 220.89 84A20.89 20.89 0 0 1 179.11 84A20.89 20.89 0 0 1 137.33 84A20.89 20.89 0 0 1 95.56 84A20.89 20.89 0 0 1 53.78 84A20.89 20.89 0 0 1 12 84Z"/>
+      <g fill="#F6E9D6">
+        <path d="M181.33 10H186.67L95.56 84A20.89 20.89 0 0 1 53.78 84Z"/>
+        <path d="M192 10H197.33L179.11 84A20.89 20.89 0 0 1 137.33 84Z"/>
+        <path d="M202.67 10H208L262.67 84A20.89 20.89 0 0 1 220.89 84Z"/>
+        <path d="M213.33 10H218.67L346.22 84A20.89 20.89 0 0 1 304.44 84Z"/>
+      </g>
+      <path fill="none" stroke="#150903" stroke-width="4" d="M12 84H388"/>
+      <path fill="none" stroke="#150903" stroke-width="7" stroke-linejoin="round" d="M176 10H224L388 84A20.89 20.89 0 0 1 346.22 84A20.89 20.89 0 0 1 304.44 84A20.89 20.89 0 0 1 262.67 84A20.89 20.89 0 0 1 220.89 84A20.89 20.89 0 0 1 179.11 84A20.89 20.89 0 0 1 137.33 84A20.89 20.89 0 0 1 95.56 84A20.89 20.89 0 0 1 53.78 84A20.89 20.89 0 0 1 12 84Z"/>
+      <circle cx="200" cy="-1" r="9" fill="#D7B151" stroke="#150903" stroke-width="5"/>
+    </symbol>
+
     <symbol id="ic-menu" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M3 6h18M3 12h13M3 18h18"/></symbol>
     <symbol id="ic-cart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" d="M2.5 3.5h2.6l2.5 12h10.8l2.1-8.5H6M9 20.5h.01M17.5 20.5h.01"/></symbol>
     <symbol id="ic-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M5 5l14 14M19 5L5 19"/></symbol>
@@ -199,10 +215,26 @@
       <svg class="piece route-p2" viewBox="0 0 160 90" data-depth="1.1" aria-hidden="true"><use href="#i-patty"/></svg>
       <div class="wrap">
         <header class="sec-head"><h2 class="h2" id="route-title" data-lines></h2></header>
-        <div class="route" id="route-map">
-          <svg class="route__path" aria-hidden="true"><path fill="none"/></svg>
-          <img class="route__marker" src="assets/hero-burger-480.webp" width="480" height="480" alt="" loading="lazy" decoding="async" aria-hidden="true">
-          <ol class="route__stops" id="route-stops"></ol>
+        <!-- The SimSim Road Trip (S-030). js/route.js draws the road and loads the cart from assets/route-cart.svg. -->
+        <div class="trip" id="trip">
+          <svg class="trip__road" aria-hidden="true" focusable="false">
+            <path class="trip__edge"/>
+            <path class="trip__tar"/>
+            <path class="trip__dash"/>
+          </svg>
+          <ol class="trip__stops" id="route-stops"></ol>
+          <div class="tent" id="tent" role="group" aria-labelledby="tent-title">
+            <svg class="tent__awning" viewBox="0 0 400 130" aria-hidden="true"><use href="#tent-awning"/></svg>
+            <div class="tent__frame">
+              <div class="tent__sign" id="tent-sign">
+                <h3 class="tent__title" id="tent-title"></h3>
+                <p class="tent__next" id="tent-next"></p>
+                <a class="btn btn--primary btn--block tent__btn" id="tent-btn" href="#menu"></a>
+              </div>
+              <div class="tent__floor" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="trip__cart" id="trip-cart" aria-hidden="true"></div>
         </div>
       </div>
     </section>
