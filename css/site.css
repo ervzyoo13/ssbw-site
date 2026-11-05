@@ -11,6 +11,8 @@
 
 :root {
   --cream: #F6E9D6;
+  /* The one turquoise, for water only (S-037). Change it here. Delete this line and the sea falls back to plain card cream. */
+  --sea: #8ED1CC;
   /* How strongly the printed paper grain shows on the cream sections (S-035). 0 turns it off. Try .04 to .07. */
   --paper-opacity: .06;
   --card: #FBF4E9;
@@ -258,8 +260,9 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
    cart to pass. From 1024px it is a street: boards down both sides, staggered by a negative --gap, with the road
    swaying down the channel between them. Scenery that would touch anything is hidden by js/route.js. */
 .route-sec { padding-top: 0; padding-bottom: 0; }
-.route-sec .sec-head { margin-bottom: 8px; }
-.trip { --road: 36px; --dash: 4px; --cart-w: 64px; --post: 48px; --gap: 128px; --channel: 76px; --inset: 4px; --lean: .75deg; --board-w: calc(100% - var(--channel) - var(--inset)); --tent-w: max(206px, 62%); position: relative; padding-bottom: calc(var(--road) / 2 + 16px); }
+.route-sec .sec-head { margin-bottom: 4px; }
+.trip { margin-top: -12px; }
+.trip { --road: 36px; --dash: 4px; --cart-w: 64px; --post: 56px; --gap: 136px; --channel: 76px; --inset: 4px; --lean: .75deg; --board-w: calc(100% - var(--channel) - var(--inset)); --tent-w: max(216px, 62%); position: relative; padding-bottom: 24px; }
 .trip__road { position: absolute; left: 0; top: 0; z-index: 0; overflow: visible; max-width: none; fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 .trip__edge { stroke: var(--white); }
 .trip__tar { stroke: var(--ink); }
@@ -311,29 +314,66 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .stop--right .scene { right: 0; }
 .scene__stack { position: relative; }
 .scene .scene__leaves { position: absolute; inset: 0; transform-origin: 47% 33%; }
-.scene--far, .scene--cloud-b { display: none; }
-.scene--cloud-a { width: 72px; }
-.scene--sea { --wave-h: 16px; width: 140px; height: 48px; }
-.scene--sea .scene__in { position: relative; height: 100%; overflow: hidden; background: var(--card); border: 4px solid var(--ink); border-radius: 999px; }
-.scene .scene__island { position: absolute; left: 24%; bottom: 20%; width: auto; height: 62%; }
-.scene .scene__wave { position: absolute; left: 0; bottom: calc(var(--wave-h) * .55); width: calc(var(--wave-h) * 30); height: var(--wave-h); max-width: none; }
-.scene .scene__wave--front { bottom: calc(var(--wave-h) * -.1); }
+.scene--far { display: none; }
+/* Phones get one piece per stop, at a size that still reads. Wider screens swap to the full scenes and the extras. */
+.scene--roomy, .scene--extra { display: none; }
+.stop .scene--surfboard { width: 66px; }
+.stop .scene--habal { width: 124px; }
+.stop .scene--palms { width: 100px; }
+.palms { display: flex; align-items: flex-end; }
+.coco { position: relative; flex: 1 1 0; min-width: 0; }
+.coco:nth-child(2) { flex-grow: .8; margin-left: -8%; }
+.coco:nth-child(3) { display: none; }
+.scene .coco .scene__leaves { transform-origin: 65% 22%; }
+.coco:nth-child(2) .scene__leaves { animation-delay: -1.6s; }
+.coco:nth-child(3) .scene__leaves { animation-delay: -3s; }
+
+/* The horizon band (S-037): sky is the page itself, then islands, sea, and a soft shore. It is scenery behind the road. */
+.hz { --hz-h: 94px; --sea-h: 44px; --crest: 12px; position: relative; z-index: 0; height: var(--hz-h); overflow: hidden; pointer-events: none; }
+.hz svg { position: absolute; max-width: none; overflow: visible; }
+.hz__sun { right: 7%; bottom: calc(var(--sea-h) - 12px); width: 44px; }
+.hz__island { bottom: calc(var(--sea-h) - 8px); }
+.hz__island--a { left: 4%; width: 96px; }
+.hz__island--b { left: 35%; width: 60px; }
+.hz__island--c, .hz__cloud, .hz__gull, .hz__crests--b { display: none; }
+.hz__sea { position: absolute; inset: auto 0 12px; height: calc(var(--sea-h) - 12px); background: var(--sea, var(--card)); border-top: 3px solid var(--ink); }
+.hz__crests { left: 0; height: var(--crest); }
+.hz__crests--a { bottom: 20px; width: calc(100% + 96px); }
+.hz__crests--b { bottom: 30px; width: calc(100% + 132px); }
+.hz__crest { fill: none; stroke: var(--card); stroke-width: 3; stroke-linecap: round; }
+.hz__boat { left: 57%; bottom: 14px; width: 76px; }
+.hz__shore { left: 0; bottom: 0; width: calc(100% + 240px); height: 18px; }
+.hz__shore-fill { fill: var(--sea, var(--card)); }
+.hz__shore-line { fill: none; stroke: var(--ink); stroke-width: 3; }
+.hz__cloud { position: absolute; }
+.hz .hz__cloud svg { position: static; width: 100%; height: auto; }
+
 .roadsign { margin: 0; padding: 4px 8px; background: var(--gold); color: var(--ink); border: 3px solid var(--ink); border-radius: 6px; font: 700 14px/1.2 var(--text); text-transform: uppercase; white-space: nowrap; }
 .scene--sign .scene__in::after { content: ""; display: block; width: 8px; height: 16px; margin: 0 auto; background: var(--ink); }
 
 /* Gentle life, only while the section is near the screen. Reduced motion stops all of it, at the end of this file. */
 .scene--cloud .scene__in { animation: cloud-drift 11s ease-in-out infinite alternate paused; will-change: transform; }
-.scene--cloud-b .scene__in, .scene--far-b .scene__in { animation-duration: 15s; animation-direction: alternate-reverse; }
+.scene--far-b .scene__in { animation-duration: 15s; animation-direction: alternate-reverse; }
 .scene .scene__leaves { animation: leaves-sway 4.5s ease-in-out infinite alternate paused; will-change: transform; }
-.scene .scene__wave { animation: wave-slide 9s linear infinite paused; will-change: transform; }
-.scene .scene__wave--front { animation-duration: 13s; animation-direction: reverse; }
-.is-near .scene__in, .is-near .scene__leaves, .is-near .scene__wave { animation-play-state: running; }
+.hz__crests--a { animation: hz-slide-a 16s linear infinite paused; will-change: transform; }
+.hz__crests--b { animation: hz-slide-b 24s linear infinite reverse paused; will-change: transform; }
+.hz__shore { animation: hz-slide-shore 30s linear infinite paused; will-change: transform; }
+.hz__boat { animation: boat-drift 26s ease-in-out infinite alternate paused; will-change: transform; }
+.hz__gull { animation: gull-glide 12s ease-in-out infinite alternate paused; will-change: transform; }
+.hz__gull--b { animation-duration: 15s; animation-delay: -4s; }
+.hz__gull--c { animation-duration: 18s; animation-delay: -9s; }
+.hz__cloud { animation: cloud-drift 13s ease-in-out infinite alternate paused; will-change: transform; }
+.hz__cloud--b { animation-duration: 18s; animation-direction: alternate-reverse; }
+.is-live .scene__in, .is-live .scene__leaves, .is-live.hz svg, .is-live.hz .hz__cloud { animation-play-state: running; }
+@keyframes hz-slide-a { to { transform: translateX(-96px); } }
+@keyframes hz-slide-b { to { transform: translateX(-132px); } }
+@keyframes hz-slide-shore { to { transform: translateX(-240px); } }
+@keyframes boat-drift { from { transform: translateX(-14px) rotate(-1deg); } to { transform: translateX(18px) rotate(1deg); } }
+@keyframes gull-glide { from { transform: translate(-14px, 3px); } to { transform: translate(18px, -5px); } }
 @keyframes cloud-drift { from { transform: translateX(-12px); } to { transform: translateX(12px); } }
 @keyframes leaves-sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
-@keyframes wave-slide { to { transform: translateX(-50%); } }
 
 /* The tent is the last stop, on the next side in the pattern. The road ends in front of it and never goes under it. */
-/* The extra room above the tent is for the sea, in the corner the road's last crossing leaves free */
 .tent { position: relative; z-index: 1; width: var(--tent-w); margin-top: calc(var(--gap) + 32px); }
 .tent--left { margin-left: var(--inset); }
 .tent--right { margin-left: auto; margin-right: var(--inset); }
@@ -351,7 +391,7 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 .tent__sign::after { right: 16%; }
 .tent__title { font: 900 36px/1 var(--display); text-transform: uppercase; letter-spacing: .005em; color: var(--maroon); }
 .tent__next { margin-top: 4px; font-size: 16px; font-weight: 700; }
-.tent__btn { margin-top: 12px; min-height: 48px; }
+.tent__btn { margin-top: 12px; min-height: 48px; padding-inline: 4px; white-space: nowrap; }
 .tent__floor { height: 28px; }
 
 /* The next section starts soon after the road ends, so the trip never trails off into a gap */
@@ -365,14 +405,14 @@ html.js-wait .hero__line, html.js-wait .hero__burger, html.js-wait .hero__sticke
 @media (max-width: 359px) {
   .stop__board { padding-bottom: 12px; }
   .stop__words { padding-inline: 0; }
-  .trip { --road: 32px; --cart-w: 56px; --gap: 136px; --channel: 68px; }
-  .scene--cloud-a { width: 56px; }
-  .stop .scene--party { width: 88px; }
-  .stop .scene--queue { width: 92px; }
-  .stop .scene--palm { width: 72px; }
-  .scene--sea { width: 124px; height: 44px; }
+  .trip { --road: 32px; --cart-w: 56px; --gap: 136px; --channel: 68px; --tent-w: 206px; }
+  .stop .scene--surfboard { width: 64px; }
+  .stop .scene--habal { width: 104px; }
+  .stop .scene--palms { width: 96px; }
+  .hz__boat { width: 68px; }
+  .hz__island--a { width: 84px; }
+  .hz__island--b { width: 52px; }
   .stop__title { font-size: 28px; }
-  .stop__text { font-size: 14px; }
   .tent__frame { --pole: 12px; margin-inline: 0; }
 }
 
@@ -546,16 +586,33 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .stop--stickered .stop__words { padding-top: 16px; }
   .stop__sticker { left: auto; right: 12px; top: -36px; }
   .stop__title { font-size: 28px; }
+  .scene--phone { display: none; }
+  .scene--roomy, .scene--extra { display: block; }
   .stop .scene--party { width: 128px; }
   .stop .scene--queue { width: 176px; }
   .stop .scene--palm { width: 128px; }
-  .scene--cloud-a { width: 96px; }
-  .scene--sea { --wave-h: 20px; width: 208px; height: 64px; }
+  .scene--surfboard { width: 64px; }
+  .scene--habal { width: 136px; }
+  .scene--palms { width: 84px; }
+  .scene--kubo { display: none; }
+  .hz { --hz-h: 128px; --sea-h: 48px; }
+  .hz__sun { left: 60%; right: auto; width: 64px; }
+  .hz__island--a { left: 6%; width: 150px; }
+  .hz__island--b { left: 27%; width: 90px; }
+  .hz__island--c { display: block; left: 76%; width: 124px; }
+  .hz__boat { left: 42%; bottom: 10px; width: 104px; }
+  .hz__crests--b { display: block; }
+  .hz__gull { display: block; width: 28px; }
+  .hz__gull--a { left: 33%; top: 12px; }
+  .hz__gull--b { left: 38%; top: 28px; width: 22px; }
+  .hz__gull--c { left: 70%; top: 18px; }
+  .hz__cloud--a { display: block; left: 48%; top: 6px; width: 80px; }
   .tent__title { font-size: 48px; }
   .tent__next { font-size: 18px; }
   .tent__btn { min-height: 56px; }
 }
 @media (min-width: 768px) {
+  .scene--palms { width: 92px; }
   .stop .scene--party { width: 152px; }
   .stop__title { font-size: 36px; }
 }
@@ -571,9 +628,21 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .stop .scene--queue { width: 152px; }
   .stop .scene--palm { width: 176px; }
   .tent { margin-top: var(--gap); }
-  .scene--cloud-a { width: 136px; }
-  .scene--cloud-b { display: block; width: 104px; }
-  .scene--sea { --wave-h: 24px; width: 320px; height: 80px; }
+  .scene--surfboard { width: 72px; }
+  .scene--habal { width: 152px; }
+  .scene--palms { width: 176px; }
+  .scene--kubo { display: block; width: 112px; }
+  .coco:nth-child(3) { display: block; flex-grow: .9; margin-left: -8%; }
+  .hz { --hz-h: 168px; --sea-h: 60px; }
+  .hz__sun { width: 84px; }
+  .hz__island--a { width: 208px; }
+  .hz__island--b { width: 124px; }
+  .hz__island--c { width: 170px; }
+  .hz__boat { bottom: 14px; width: 144px; }
+  .hz__gull { width: 36px; }
+  .hz__gull--b { width: 28px; }
+  .hz__cloud--a { left: 47%; top: 10px; width: 136px; }
+  .hz__cloud--b { display: block; right: 1.5%; top: 22px; width: 104px; }
   .tent__frame { --pole: 16px; padding-top: calc(7% + 32px); }
   .tent__sign { margin-inline: 24px; padding: 16px; }
   .tent__sign::before, .tent__sign::after { top: -48px; height: 44px; }
@@ -588,9 +657,16 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
   .stop .scene--party { width: 152px; }
   .stop .scene--queue { width: 176px; }
   .stop .scene--palm { width: 200px; }
-  .scene--cloud-a { width: 176px; }
-  .scene--cloud-b { width: 128px; }
-  .scene--sea { width: 400px; height: 88px; }
+  .scene--surfboard { width: 80px; }
+  .scene--habal { width: 168px; }
+  .scene--palms { width: 200px; }
+  .scene--kubo { width: 136px; }
+  .hz { --hz-h: 188px; --sea-h: 68px; }
+  .hz__island--a { width: 240px; }
+  .hz__island--b { width: 140px; }
+  .hz__island--c { width: 192px; }
+  .hz__boat { width: 160px; }
+  .hz__sun { width: 96px; }
   .tent__title { font-size: 56px; }
 }
 @media (min-width: 1440px) {
@@ -602,8 +678,8 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
 }
 @media (min-width: 1920px) {
   .scene--far { display: block; z-index: 0; }
-  .scene--far-a { left: max(24px, calc(50% - 1040px)); top: 160px; width: 240px; }
-  .scene--far-b { right: max(24px, calc(50% - 1000px)); top: 720px; width: 200px; }
+  .scene--far-a { left: max(24px, calc(50% - 1040px)); top: 620px; width: 240px; }
+  .scene--far-b { right: max(24px, calc(50% - 1000px)); top: 1040px; width: 200px; }
 }
 
 /* Wide burger shadow only where it stays cheap to draw */
@@ -613,6 +689,6 @@ body.has-items .bottombar { transform: none; visibility: visible; transition: tr
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
-  .piece, .wave__svg, .trip__cart, .scene__in, .scene .scene__leaves, .scene .scene__wave, .scene--cloud .scene__in { will-change: auto; }
+  .piece, .wave__svg, .trip__cart, .scene__in, .scene .scene__leaves, .scene--cloud .scene__in, .hz svg, .hz__cloud { will-change: auto; }
   .btn:hover, .card:hover .card__photo, .card:hover .card__strip, .menu-cta__btn:hover svg { transform: none; }
 }

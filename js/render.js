@@ -89,7 +89,11 @@ function renderRoute(d) {
   $('route-title').textContent = title;
   $('route-stops').innerHTML = stops.map((s, i) => {
     const sticker = s.sticker ? `<p class="stop__sticker stop__sticker--${esc(s.sticker.style)}">${esc(s.sticker.text)}</p>` : '';
-    const around = s.scene && scenery[s.scene] ? scene(esc(s.scene), scenery[s.scene]) : '';
+    // Phones are composed on their own: one Siargao piece per stop. Wider screens have room for the full scene.
+    const around = [
+      s.scene && scenery[s.scene] ? scene(`${esc(s.scene)} scene--roomy`, scenery[s.scene]) : '',
+      s.phoneScene && scenery[s.phoneScene] ? scene(`${esc(s.phoneScene)} scene--phone`, scenery[s.phoneScene]) : '',
+    ].join('');
     return `
     <li class="stop stop--${i % 2 ? 'right' : 'left'}${s.title && s.date ? '' : ' stop--todo'}${sticker ? ' stop--stickered' : ''}">
       <div class="stop__pop">
@@ -107,11 +111,13 @@ function renderRoute(d) {
       ${around}
     </li>`;
   }).join('');
+  $('horizon').innerHTML = scenery.horizon;
   $('trip-scenery').innerHTML = [
-    scene('cloud scene--cloud-a', scenery.cloud),
-    scene('cloud scene--cloud-b', scenery.cloud),
-    scene('sea', scenery.sea),
-    welcomeSign ? scene('sign', `<p class="roadsign">${esc(welcomeSign)}</p>`) : '',
+    scene('surfboard scene--extra', scenery.surfboard),
+    scene('habal scene--extra', scenery.habal),
+    scene('palms scene--extra', scenery.palms),
+    scene('kubo scene--extra', scenery.kubo),
+    welcomeSign ? scene('sign scene--extra', `<p class="roadsign">${esc(welcomeSign)}</p>`) : '',
   ].join('');
   $('route').insertAdjacentHTML('afterbegin', scene('cloud scene--far scene--far-a', scenery.cloud) + scene('cloud scene--far scene--far-b', scenery.cloud));
   $('tent').classList.add(`tent--${stops.length % 2 ? 'right' : 'left'}`);

@@ -8,7 +8,7 @@ const SHAPES = {
   ribbon: { h: [64, 112], period: 0.7, f: (t) => 0.78 * Math.sin(t) + 0.22 * Math.sin(2 * t + 1) },
   swell: { h: [64, 144], period: 1.1, f: (t) => Math.sin(t) },
   chop: { h: [48, 96], period: 0.55, f: (t) => 0.62 * Math.sin(2 * t) + 0.38 * Math.sin(3 * t + 0.8) },
-  bun: { h: [48, 96], period: 0.34, f: (t) => 1 - 2 * Math.abs(Math.sin(t / 2)) },
+  roll: { h: [56, 112], period: 0.9, f: (t) => 0.6 * Math.sin(t + 0.6) + 0.28 * Math.sin(2 * t + 2.1) + 0.12 * Math.sin(3 * t + 0.9) },
 };
 
 const mix = (a, b, v) => a + (b - a) * Math.min(1, Math.max(0, v));

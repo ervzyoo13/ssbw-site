@@ -68,7 +68,6 @@ export const trip = {
 // a board, the tent, the road, the headline or another piece is not shown. That holds at any screen size and for
 // any number of stops, including ones nobody has tested.
 function placeScenery({ W, road, rel, stops, tent, street }) {
-  const pieces = (name) => stage.querySelector(`.scene--${name}`);
   const boxOf = (el) => {
     const r = rel(el);
     return { l: r.l, r: r.r, t: r.t, b: r.b };
@@ -121,39 +120,41 @@ function placeScenery({ W, road, rel, stops, tent, street }) {
     el.style.top = `${f(found[1])}px`;
     taken.push({ l: found[0], r: found[0] + w, t: found[1], b: found[1] + h });
   };
+  const free = (name) => stage.querySelector(`#trip-scenery .scene--${name}`);
   const size = (el) => (el ? [el.offsetWidth, el.offsetHeight] : [0, 0]);
-  const [seaW, seaH] = size(pieces('sea'));
-  const [signW, signH] = size(pieces('sign'));
-  const [cloudW, cloudH] = size(pieces('cloud-a'));
-  const [cloud2W] = size(pieces('cloud-b'));
+  const first = stops[0];
   const second = stops[1];
   const last = stops[stops.length - 1];
+  // Under a board, on the road's side of its post: the first choice is near the board's end, the second by the post.
+  const besidePost = (stop, w) => {
+    if (!stop) return [];
+    const centre = (stop.l + stop.r) / 2;
+    const beyond = stop.left ? centre + 16 : centre - 16 - w;
+    const near = stop.left ? stop.r - w - 8 : stop.l + 8;
+    return [[stop.left ? Math.max(beyond, near) : Math.min(beyond, near), stop.boardBottom + 4], [beyond, stop.boardBottom + 4]];
+  };
 
-  const seaSpots = street && second
-    ? [[second.r - seaW, second.t - seaH - 56], [W - seaW, second.t - seaH - 56]]
-    : [[tent.r - seaW, tent.t - seaH - 4], [tent.l, tent.t - seaH - 4]];
-  put(pieces('sea'), seaSpots);
+  const [surfW] = size(free('surfboard'));
+  put(free('surfboard'), besidePost(first, surfW));
 
-  put(pieces('cloud-a'), [
-    [W - cloudW - W * 0.04, -cloudH - 24],
-    [W - cloudW, -cloudH + 8],
-    [W - cloudW, 8],
-    [W - cloudW, 96],
+  const [habalW] = size(free('habal'));
+  put(free('habal'), [...besidePost(last, habalW), ...besidePost(second, habalW)]);
+
+  // In the street layout the palms line the road and the hut stands behind them, above the second board, clear of
+  // its sticker. Otherwise the palms take the corner above the tent that the road's last crossing leaves free.
+  const [palmsW, palmsH] = size(free('palms'));
+  put(free('palms'), street && second
+    ? [[second.l + 8, second.t - palmsH - 52]]
+    : [[tent.r - palmsW, tent.t - palmsH - 4], [tent.l, tent.t - palmsH - 4], ...besidePost(second, palmsW)]);
+  const [kuboW, kuboH] = size(free('kubo'));
+  put(free('kubo'), street && second ? [[second.r - kuboW - 8, second.t - kuboH - 52]] : []);
+
+  const [signW, signH] = size(free('sign'));
+  put(free('sign'), [
+    ...(street && last ? [[last.r - signW, tent.b - signH], [last.l, tent.b - signH]] : []),
+    ...besidePost(first, signW),
+    ...(last ? [[W - signW, last.t - signH - 4], [0, last.t - signH - 4]] : []),
   ]);
-  put(pieces('cloud-b'), second ? [[second.l + (second.r - second.l) * 0.12, Math.max(8, second.t - seaH - cloudH - 80)], [W - cloud2W, 8]] : [[W - cloud2W, 8]]);
-
-  // The road sign stands right at the roadside: under the first board, beyond its post, on the road's side.
-  const signSpots = [];
-  const first = stops[0];
-  if (street && last) signSpots.push([last.r - signW, tent.b - signH], [last.l, tent.b - signH]);
-  if (first) {
-    const centre = (first.l + first.r) / 2;
-    const beyondPost = first.left ? centre + 16 : centre - 16 - signW;
-    const nearEdge = first.left ? first.r - signW - 8 : first.l + 8;
-    signSpots.push([first.left ? Math.max(beyondPost, nearEdge) : Math.min(beyondPost, nearEdge), first.boardBottom + 4], [beyondPost, first.boardBottom + 4]);
-  }
-  if (last) signSpots.push([W - signW, last.t - signH - 4], [0, last.t - signH - 4]);
-  put(pieces('sign'), signSpots);
 }
 
 function draw() {
@@ -182,9 +183,10 @@ function draw() {
   const tentRight = tentEl.classList.contains('tent--right');
   const dir = tentRight ? 1 : -1;
 
-  // The road ends in front of the tent's opening, short of its post, so the parked cart stands clear of it.
+  // The road ends in front of the tent's opening, short of its post, so the parked cart stands clear of it. Its
+  // lower edge stops on the tent's ground line: lower than that, it reads as carrying on underneath the tent.
   const xEnd = tentRight ? tent.l - TENT_GAP - cartW / 2 : tent.r + TENT_GAP + cartW / 2;
-  const yFinal = tent.b - 4;
+  const yFinal = tent.b - road / 2 - 4;
 
   // Wide screens have a street: boards down both sides and a channel between them the cart fits through.
   const edgeL = Math.max(-Infinity, ...stops.filter((s) => s.left).map((s) => s.r), tentRight ? -Infinity : tent.r);
@@ -336,11 +338,14 @@ export function initRoute() {
   if ('ResizeObserver' in window) new ResizeObserver(redraw).observe(stage);
   loadCart().then(redraw);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
-  // The clouds, leaves and waves only move while the section is near the screen.
-  const section = document.getElementById('route');
+  // Each moving piece only moves while it is near the screen, so a phone never animates what nobody can see.
+  const movers = document.querySelectorAll('#horizon, #route [data-scenery]');
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => section.classList.toggle('is-near', e.isIntersecting), { rootMargin: '200px' }).observe(section);
+    const watcher = new IntersectionObserver((entries) => {
+      entries.forEach((e) => e.target.classList.toggle('is-live', e.isIntersecting));
+    }, { rootMargin: '120px' });
+    movers.forEach((el) => watcher.observe(el));
   } else {
-    section.classList.add('is-near');
+    movers.forEach((el) => el.classList.add('is-live'));
   }
 }
