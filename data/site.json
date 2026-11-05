@@ -1,0 +1,210 @@
+{
+  "meta": {
+    "version": 1,
+    "updated": "2026-11-06",
+    "note": "Everything the page shows comes from this file. null means unknown: the page shows a marked placeholder. See docs/DATA.md."
+  },
+  "shop": {
+    "name": "SimSim Burgers and Wraps",
+    "logoLine": "SimSim Burgers & Wraps",
+    "shortName": "SSBW.",
+    "tagline": "Smash It with SimSim",
+    "claim": "The First to Smash in Surigao",
+    "community": "SimSim Fam",
+    "location": "Surigao City, Philippines, 8400",
+    "hours": null,
+    "instagram": {
+      "handle": "wrapitwith_simsim",
+      "url": "https://www.instagram.com/wrapitwith_simsim/"
+    },
+    "messenger": {
+      "label": "SimSim Burgers and Wraps",
+      "url": null
+    }
+  },
+  "settings": {
+    "currencySymbol": "₱",
+    "nextPopUp": {
+      "date": null,
+      "place": null
+    },
+    "pickupPlace": null,
+    "deliveryArea": null,
+    "deliveryFee": null,
+    "paymentMethods": ["GCash", "Cash"],
+    "gcash": {
+      "number": null,
+      "qrImage": null,
+      "note": "Send your payment to the number or QR we give you."
+    },
+    "orderNote": "Test only, ordering opens soon."
+  },
+  "hero": {
+    "lines": ["FIRST TO", "SMASH"],
+    "stickers": ["SMASHED IN SURIGAO", null],
+    "burgerAlt": "Glazed fried chicken burger with a sesame bun, lettuce and slaw"
+  },
+  "menuIntro": {
+    "title": "Smash it with SimSim",
+    "text": "Names and prices marked in brackets are still being confirmed."
+  },
+  "menu": [
+    {
+      "id": "ultimate-oklahoma",
+      "name": "Ultimate Oklahoma",
+      "price": null,
+      "bestSeller": true,
+      "bestSellerConfirmed": false,
+      "photo": {
+        "src": "assets/img/temp/t2-hand-burger.webp",
+        "width": 349,
+        "height": 347,
+        "cutout": false,
+        "alt": "A hand holding a smashed burger with melted cheese and sauce in red and white checkered paper"
+      }
+    },
+    {
+      "id": "item-2",
+      "name": null,
+      "price": null,
+      "bestSeller": false,
+      "bestSellerConfirmed": false,
+      "photo": {
+        "src": "assets/hero-burger-480.webp",
+        "srcset": "assets/hero-burger-480.webp 480w, assets/hero-burger-800.webp 800w",
+        "width": 480,
+        "height": 480,
+        "cutout": true,
+        "alt": "Glazed fried chicken burger with a sesame bun, lettuce and slaw"
+      }
+    },
+    {
+      "id": "item-3",
+      "name": null,
+      "price": null,
+      "bestSeller": false,
+      "bestSellerConfirmed": false,
+      "photo": {
+        "src": "assets/img/temp/t4-green-sauce.webp",
+        "width": 149,
+        "height": 150,
+        "cutout": false,
+        "alt": "Burger with a sesame bun, green sauce and melted cheese"
+      }
+    },
+    {
+      "id": "item-4",
+      "name": null,
+      "price": null,
+      "bestSeller": false,
+      "bestSellerConfirmed": false,
+      "photo": null
+    }
+  ],
+  "services": {
+    "title": "More from SimSim",
+    "items": [
+      {
+        "id": "pop-up",
+        "name": "Pop-up",
+        "text": "Pre-order or walk in at our next pop-up.",
+        "seen": null,
+        "packages": [
+          { "name": null, "rate": null }
+        ],
+        "button": "Message us to book",
+        "photo": {
+          "src": "assets/img/temp/t1-burger-closeup.webp",
+          "width": 687,
+          "height": 348,
+          "alt": "Close-up of a smashed burger with melted cheese, fried onions and peppery sauce"
+        }
+      },
+      {
+        "id": "pica-pica",
+        "name": "Pica-Pica Service",
+        "text": "Mini burgers and tacos for weddings and events.",
+        "seen": "On the table at a past service: Dinakdakan Tacos.",
+        "packages": [
+          { "name": null, "rate": null }
+        ],
+        "button": "Message us to book",
+        "photo": {
+          "src": "assets/img/temp/t7-pica-table.webp",
+          "width": 349,
+          "height": 348,
+          "alt": "Table spread of mini burgers and tacos on wooden stands, beside a red SSBW board"
+        }
+      }
+    ]
+  },
+  "reviews": {
+    "title": "SimSim Fam says",
+    "label": "Sample",
+    "items": [
+      { "text": null, "name": null, "service": "Pop-up" },
+      { "text": null, "name": null, "service": "Pica-Pica" },
+      { "text": null, "name": null, "service": "Delivery" }
+    ]
+  },
+  "route": {
+    "title": "Onto the next pop-up",
+    "stops": [
+      {
+        "title": "Another successful Pica-Pica",
+        "date": "Post dated August 10",
+        "text": "A wedding spread of mini burgers and tacos.",
+        "photo": {
+          "src": "assets/img/temp/t9-tiered-tacos.webp",
+          "width": 232,
+          "height": 232,
+          "alt": "Tiered wooden stand of mini burgers above a tray of Dinakdakan Tacos"
+        }
+      },
+      {
+        "title": "141 buns. Gone.",
+        "date": "Post dated September 27",
+        "text": "141 buns sold. Same love. Same hungry Fam.",
+        "photo": {
+          "src": "assets/img/temp/t3-chicken-burger.webp",
+          "width": 335,
+          "height": 347,
+          "alt": "Fried chicken burger with lettuce and slaw on red and white checkered paper"
+        }
+      },
+      {
+        "title": null,
+        "date": null,
+        "text": null,
+        "photo": {
+          "src": "assets/img/temp/t5-green-sauce-2.webp",
+          "width": 149,
+          "height": 150,
+          "alt": "Burger with green sauce and melted cheese in checkered paper"
+        }
+      },
+      {
+        "title": null,
+        "date": null,
+        "text": null,
+        "photo": {
+          "src": "assets/img/temp/t6-stacked.webp",
+          "width": 149,
+          "height": 150,
+          "alt": "Two sesame burgers stacked in checkered paper"
+        }
+      }
+    ]
+  },
+  "about": {
+    "title": "About SimSim",
+    "lead": "The First to Smash in Surigao.",
+    "story": null,
+    "photo": {
+      "src": "assets/img/temp/t10-outdoor-stand.webp",
+      "width": 230,
+      "height": 197,
+      "alt": "Outdoor stand stacked with mini burgers"
+    }
+  }
+}

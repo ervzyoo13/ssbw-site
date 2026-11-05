@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SimSim Burgers and Wraps | The First to Smash in Surigao</title>
+  <meta name="description" content="Smash It with SimSim. Pop-up smashed burgers and Pica-Pica Service in Surigao City.">
+  <meta name="theme-color" content="#F6E9D6">
+  <link rel="preload" href="assets/fonts/smooch-sans/smooch-sans-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/dm-sans/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" type="image/webp" fetchpriority="high"
+        imagesrcset="assets/hero-burger-480.webp 480w, assets/hero-burger-800.webp 800w, assets/hero-burger-1400.webp 1400w"
+        imagesizes="min(82vw, 80vh, 984px)">
+  <link rel="stylesheet" href="assets/vendor/lenis/lenis.css">
+  <link rel="stylesheet" href="css/site.css">
+  <script>
+    // Hide the hero until motion has set it up, with a safety so it can never stay hidden.
+    document.documentElement.classList.add('js-wait');
+    setTimeout(function () { document.documentElement.classList.remove('js-wait'); }, 4000);
+  </script>
+  <script src="js/preloader.js"></script>
+  <script src="assets/vendor/gsap/gsap.min.js" defer></script>
+  <script src="assets/vendor/gsap/ScrollTrigger.min.js" defer></script>
+  <script src="assets/vendor/lenis/lenis.min.js" defer></script>
+  <script src="js/main.js" type="module"></script>
+</head>
+<body>
+  <a class="skip" href="#menu">Skip to the menu</a>
+
+  <!-- Wordmark, icons and ingredient pieces, all drawn for this site -->
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <!-- TEMP wordmark: see docs/IMAGES.md -->
+    <symbol id="ssbw" viewBox="0 0 920 180">
+      <g fill="none" stroke="currentColor" stroke-width="52" stroke-linejoin="round">
+        <path d="M180 26H62A32 32 0 0 0 62 90H128A32 32 0 0 1 128 154H10"/>
+        <path d="M382 26H264A32 32 0 0 0 264 90H330A32 32 0 0 1 330 154H212"/>
+      </g>
+      <path fill="currentColor" fill-rule="evenodd" d="M404 0H536C574 0 594 18 594 46C594 66 584 80 566 88C588 96 600 112 600 134C600 164 576 180 538 180H404ZM466 44V64H522C530 64 534 60 534 54C534 48 530 44 522 44ZM466 112V140H526C536 140 540 133 540 125C540 118 536 112 526 112Z"/>
+      <path fill="currentColor" d="M610 0H672L686 98L702 0H762L778 98L792 0H854L816 180H760L732 70L704 180H648Z"/>
+      <circle fill="currentColor" cx="889" cy="153" r="27"/>
+    </symbol>
+
+    <symbol id="ic-menu" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M3 6h18M3 12h13M3 18h18"/></symbol>
+    <symbol id="ic-cart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" d="M2.5 3.5h2.6l2.5 12h10.8l2.1-8.5H6M9 20.5h.01M17.5 20.5h.01"/></symbol>
+    <symbol id="ic-close" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M5 5l14 14M19 5L5 19"/></symbol>
+    <symbol id="ic-back" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M15 4l-8 8 8 8"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="ic-minus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M5 12h14"/></symbol>
+    <symbol id="ic-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/></symbol>
+
+    <symbol id="i-lettuce" viewBox="0 0 160 104">
+      <path fill="#7FA63C" stroke="#46621F" stroke-width="3" stroke-linejoin="round" d="M9 58C2 46 11 33 24 35 25 20 43 12 55 22 63 7 86 5 94 20 107 12 125 19 127 34 142 32 155 45 150 58 158 69 148 85 134 82 129 95 110 99 100 90 90 101 69 99 61 88 49 97 30 90 28 77 15 79 4 70 9 58Z"/>
+      <path fill="none" stroke="#46621F" stroke-width="3" stroke-linecap="round" d="M30 61C50 52 86 49 130 56M60 56 49 38M90 52 95 32M70 55 84 74M43 59 34 74M112 54 120 72"/>
+    </symbol>
+    <symbol id="i-cheese" viewBox="0 0 120 120">
+      <path fill="#E9B13C" stroke="#8A5A12" stroke-width="3" stroke-linejoin="round" d="M12 34 78 10C83 8 87 10 89 14L111 76C113 81 111 85 107 86L99 89C97 99 97 110 89 110 81 110 81 100 79 96L30 110C25 111 21 110 20 105L8 43C7 38 8 35 12 34Z"/>
+      <circle cx="46" cy="50" r="8" fill="#C98F22"/><circle cx="74" cy="36" r="5" fill="#C98F22"/><circle cx="64" cy="76" r="6" fill="#C98F22"/><circle cx="90" cy="64" r="4" fill="#C98F22"/>
+    </symbol>
+    <symbol id="i-tomato" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="56" fill="#C8262C"/>
+      <circle cx="60" cy="60" r="48" fill="#EC6A5A"/>
+      <g fill="#F9C7B1">
+        <path d="M60 54 46 20C55 16 65 16 74 20Z"/>
+        <path d="M60 54 46 20C55 16 65 16 74 20Z" transform="rotate(72 60 60)"/>
+        <path d="M60 54 46 20C55 16 65 16 74 20Z" transform="rotate(144 60 60)"/>
+        <path d="M60 54 46 20C55 16 65 16 74 20Z" transform="rotate(216 60 60)"/>
+        <path d="M60 54 46 20C55 16 65 16 74 20Z" transform="rotate(288 60 60)"/>
+      </g>
+      <g fill="#E8A23B"><ellipse cx="60" cy="32" rx="3" ry="5"/><ellipse cx="60" cy="32" rx="3" ry="5" transform="rotate(72 60 60)"/><ellipse cx="60" cy="32" rx="3" ry="5" transform="rotate(144 60 60)"/><ellipse cx="60" cy="32" rx="3" ry="5" transform="rotate(216 60 60)"/><ellipse cx="60" cy="32" rx="3" ry="5" transform="rotate(288 60 60)"/></g>
+    </symbol>
+    <symbol id="i-patty" viewBox="0 0 160 90">
+      <path fill="#5A2F18" stroke="#2A1408" stroke-width="3" stroke-linejoin="round" d="M10 46C3 36 12 26 22 26 24 15 38 9 48 16 56 8 72 6 80 14 90 8 106 10 112 20 124 18 138 26 138 38 147 46 143 60 130 62 128 73 112 79 102 73 94 81 76 81 68 73 58 79 42 77 36 67 24 69 12 60 10 46Z"/>
+      <g fill="#8A5230"><circle cx="40" cy="34" r="5"/><circle cx="70" cy="28" r="4"/><circle cx="100" cy="36" r="6"/><circle cx="58" cy="52" r="6"/><circle cx="90" cy="58" r="4"/><circle cx="120" cy="50" r="4"/><circle cx="28" cy="48" r="3"/></g>
+    </symbol>
+    <symbol id="i-sesame" viewBox="0 0 120 120">
+      <g fill="#F3DFB5" stroke="#B08A4A" stroke-width="2">
+        <path d="M0-12C6-12 9-6 9 0S5 11 0 11-9 6-9 0-6-12 0-12Z" transform="translate(28 30) rotate(24)"/>
+        <path d="M0-12C6-12 9-6 9 0S5 11 0 11-9 6-9 0-6-12 0-12Z" transform="translate(78 22) rotate(-40)"/>
+        <path d="M0-12C6-12 9-6 9 0S5 11 0 11-9 6-9 0-6-12 0-12Z" transform="translate(58 62) rotate(70)"/>
+        <path d="M0-12C6-12 9-6 9 0S5 11 0 11-9 6-9 0-6-12 0-12Z" transform="translate(100 74) rotate(12)"/>
+        <path d="M0-12C6-12 9-6 9 0S5 11 0 11-9 6-9 0-6-12 0-12Z" transform="translate(22 92) rotate(-20)"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <!-- First-visit preloader. It stays hidden unless js/preloader.js turns it on, so it can never get stuck (S-027). -->
+  <div class="preloader" id="preloader" role="status">
+    <div class="preloader__in">
+      <svg class="preloader__mark" viewBox="0 0 920 180" aria-hidden="true"><use href="#ssbw"/></svg>
+      <svg class="smash" viewBox="0 -76 280 220" aria-hidden="true">
+        <rect class="smash__griddle" x="24" y="124" width="232" height="10" rx="5"/>
+        <g class="smash__patty">
+          <path fill="#5A2F18" stroke="#2A1408" stroke-width="3" stroke-linejoin="round" d="M96 124C90 112 94 98 104 94 108 80 124 72 138 74 152 70 170 78 176 92 186 98 190 112 184 124Z"/>
+          <g fill="#8A5230"><circle cx="118" cy="98" r="5"/><circle cx="146" cy="90" r="4"/><circle cx="166" cy="106" r="5"/><circle cx="136" cy="112" r="4"/><circle cx="106" cy="114" r="3"/></g>
+        </g>
+        <g class="smash__steam" fill="none" stroke="#8F7B69" stroke-width="4" stroke-linecap="round">
+          <path class="smash__puff smash__puff--1" d="M72 104C66 96 78 90 72 82"/>
+          <path class="smash__puff smash__puff--2" d="M140 84C134 76 146 70 140 62"/>
+          <path class="smash__puff smash__puff--3" d="M208 104C202 96 214 90 208 82"/>
+        </g>
+        <g class="smash__spatula">
+          <path fill="none" stroke="#150903" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" d="M186 98 200 98 218 70"/>
+          <path fill="none" stroke="#8C2421" stroke-width="14" stroke-linecap="round" d="M222 64 258 14"/>
+          <rect x="62" y="95" width="130" height="8" rx="3" fill="#150903"/>
+        </g>
+      </svg>
+      <p class="preloader__text">FIRING UP THE GRILL...</p>
+    </div>
+    <div class="preloader__edge" aria-hidden="true"></div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar__in">
+      <a class="topbar__logo" href="#top" aria-label="SSBW. SimSim Burgers and Wraps, back to top">
+        <svg viewBox="0 0 920 180" aria-hidden="true"><use href="#ssbw"/></svg>
+      </a>
+      <div class="topbar__actions">
+        <button class="iconbtn" type="button" data-action="open-nav" aria-label="Open menu">
+          <svg aria-hidden="true"><use href="#ic-menu"/></svg>
+        </button>
+        <button class="iconbtn" type="button" data-action="open-cart" aria-label="Open cart" data-cart-label>
+          <svg aria-hidden="true"><use href="#ic-cart"/></svg>
+          <span class="badge" data-cart-count hidden>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <svg class="piece hero-p1" viewBox="0 0 160 104" data-depth="0.8" data-depth-phone="0.5" aria-hidden="true"><use href="#i-lettuce"/></svg>
+      <svg class="piece hero-p2" viewBox="0 0 120 120" data-depth="1.2" data-depth-phone="0.5" aria-hidden="true"><use href="#i-tomato"/></svg>
+      <svg class="piece hero-p3" viewBox="0 0 120 120" data-depth="0.6" aria-hidden="true"><use href="#i-cheese"/></svg>
+      <svg class="piece hero-p4" viewBox="0 0 120 120" data-depth="1" aria-hidden="true"><use href="#i-sesame"/></svg>
+
+      <div class="hero__stage">
+        <h1 class="hero__title" id="hero-title">
+          <span class="hero__line hero__line--1"><span class="hero__mask"><span class="hero__word" data-hero-line>FIRST TO</span></span></span>
+          <span class="hero__line hero__line--2"><span class="hero__mask"><span class="hero__word" data-hero-line>SMASH</span></span></span>
+        </h1>
+        <div class="hero__burger" data-hero-burger-wrap>
+          <img class="hero__burger-img" data-hero-burger
+               src="assets/hero-burger-800.webp"
+               srcset="assets/hero-burger-480.webp 480w, assets/hero-burger-800.webp 800w, assets/hero-burger-1400.webp 1400w"
+               sizes="min(82vw, 80vh, 984px)"
+               width="2048" height="2048" fetchpriority="high" decoding="async"
+               alt="Glazed fried chicken burger with a sesame bun, lettuce and slaw">
+        </div>
+        <div id="hero-stickers"></div>
+      </div>
+
+      <div class="hero__cta" data-hero-cta>
+        <p class="hero__next" id="next-popup">Next pop-up: <span class="ph">[DATE?]</span> at <span class="ph">[PLACE?]</span></p>
+        <div class="hero__buttons">
+          <a class="btn btn--primary" href="#menu">Order now</a>
+          <a class="btn btn--outline" href="#pica-pica">Book Pica-Pica</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="wave wave--ribbon" data-wave="ribbon" aria-hidden="true"></div>
+
+    <section class="section menu" id="menu" aria-labelledby="menu-title" tabindex="-1">
+      <svg class="piece menu-p1" viewBox="0 0 160 90" data-depth="1" data-depth-phone="0.5" aria-hidden="true"><use href="#i-patty"/></svg>
+      <svg class="piece menu-p2" viewBox="0 0 120 120" data-depth="0.5" aria-hidden="true"><use href="#i-sesame"/></svg>
+      <div class="wrap">
+        <header class="sec-head">
+          <h2 class="h2" id="menu-title" data-lines></h2>
+          <p class="lead" id="menu-text"></p>
+        </header>
+        <ul class="cards" id="menu-grid"></ul>
+      </div>
+    </section>
+
+    <div class="wave wave--to-ink" data-wave="swell" aria-hidden="true"></div>
+
+    <section class="section more on-dark" id="more" aria-labelledby="more-title" tabindex="-1">
+      <svg class="piece more-p1" viewBox="0 0 120 120" data-depth="1" aria-hidden="true"><use href="#i-cheese"/></svg>
+      <svg class="piece more-p2" viewBox="0 0 160 104" data-depth="0.4" aria-hidden="true"><use href="#i-lettuce"/></svg>
+      <div class="wrap">
+        <header class="sec-head"><h2 class="h2" id="more-title" data-lines></h2></header>
+        <div class="services" id="services"></div>
+      </div>
+    </section>
+
+    <div class="wave wave--to-cream" data-wave="chop" aria-hidden="true"></div>
+
+    <section class="section fam" id="fam" aria-labelledby="fam-title" tabindex="-1">
+      <svg class="piece fam-p1" viewBox="0 0 120 120" data-depth="1" data-depth-phone="0.5" aria-hidden="true"><use href="#i-tomato"/></svg>
+      <div class="wrap">
+        <header class="sec-head"><h2 class="h2" id="fam-title" data-lines></h2></header>
+        <ul class="notes" id="reviews"></ul>
+      </div>
+    </section>
+
+    <section class="section route-sec" id="route" aria-labelledby="route-title" tabindex="-1">
+      <svg class="piece route-p1" viewBox="0 0 120 120" data-depth="0.8" data-depth-phone="0.5" aria-hidden="true"><use href="#i-sesame"/></svg>
+      <svg class="piece route-p2" viewBox="0 0 160 90" data-depth="1.1" aria-hidden="true"><use href="#i-patty"/></svg>
+      <div class="wrap">
+        <header class="sec-head"><h2 class="h2" id="route-title" data-lines></h2></header>
+        <div class="route" id="route-map">
+          <svg class="route__path" aria-hidden="true"><path fill="none"/></svg>
+          <img class="route__marker" src="assets/hero-burger-480.webp" width="480" height="480" alt="" loading="lazy" decoding="async" aria-hidden="true">
+          <ol class="route__stops" id="route-stops"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about" id="about" aria-labelledby="about-title" tabindex="-1">
+      <svg class="piece about-p1" viewBox="0 0 120 120" data-depth="0.6" data-depth-phone="0.3" aria-hidden="true"><use href="#i-cheese"/></svg>
+      <div class="wrap about__grid">
+        <div class="about__story">
+          <h2 class="h2" id="about-title" data-lines></h2>
+          <p class="lead" id="about-lead"></p>
+          <p id="about-story"></p>
+          <div class="about__photo" id="about-photo"></div>
+        </div>
+        <div class="about__find" id="find-us">
+          <h2 class="h2 h2--small" id="find-title" data-lines>Find us</h2>
+          <dl class="facts" id="facts"></dl>
+        </div>
+      </div>
+    </section>
+
+    <div class="wave wave--to-ink" data-wave="bun" aria-hidden="true"></div>
+  </main>
+
+  <footer class="footer on-dark" id="contact">
+    <div class="wrap footer__top">
+      <nav aria-label="Footer">
+        <ul class="footer__links">
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#more">More from SimSim</a></li>
+          <li><a href="#fam">SimSim Fam says</a></li>
+          <li><a href="#route">Pop-up route</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#find-us">Find us</a></li>
+        </ul>
+      </nav>
+      <ul class="footer__links footer__social" id="footer-social"></ul>
+      <p class="footer__note" id="footer-note"></p>
+    </div>
+    <div class="footer__mark">
+      <svg viewBox="0 0 920 180" role="img" aria-label="SSBW."><use href="#ssbw"/></svg>
+    </div>
+  </footer>
+
+  <button class="fab" type="button" data-action="open-cart" data-fab aria-label="Open cart" data-cart-label>
+    <svg aria-hidden="true"><use href="#ic-cart"/></svg>
+    <span class="badge" data-cart-count hidden>0</span>
+  </button>
+
+  <div class="bottombar" data-bottombar>
+    <div class="bottombar__in">
+      <p class="bottombar__sum"><strong data-bar-count>0 items</strong> <span data-bar-subtotal></span></p>
+      <button class="btn btn--primary btn--small" type="button" data-action="open-cart">View cart</button>
+    </div>
+  </div>
+
+  <div class="vh" id="live" aria-live="polite"></div>
+
+  <dialog class="sheet" id="nav-dialog" aria-label="Site menu">
+    <div class="sheet__panel on-dark" data-lenis-prevent>
+      <div class="sheet__head">
+        <svg class="sheet__logo" viewBox="0 0 920 180" aria-hidden="true"><use href="#ssbw"/></svg>
+        <button class="iconbtn" type="button" data-action="close-dialog" aria-label="Close menu"><svg aria-hidden="true"><use href="#ic-close"/></svg></button>
+      </div>
+      <nav aria-label="Site">
+        <ul class="sheet__links">
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#more">More from SimSim</a></li>
+          <li><a href="#fam">SimSim Fam says</a></li>
+          <li><a href="#route">Pop-up route</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#find-us">Find us</a></li>
+        </ul>
+      </nav>
+    </div>
+  </dialog>
+
+  <dialog class="drawer" id="cart-dialog" aria-labelledby="drawer-title">
+    <div class="drawer__panel" data-lenis-prevent>
+      <header class="drawer__head">
+        <button class="iconbtn" type="button" data-action="back-to-cart" aria-label="Back to cart" hidden><svg aria-hidden="true"><use href="#ic-back"/></svg></button>
+        <h2 class="drawer__title" id="drawer-title" tabindex="-1">Your cart</h2>
+        <button class="iconbtn" type="button" data-action="close-dialog" aria-label="Close"><svg aria-hidden="true"><use href="#ic-close"/></svg></button>
+      </header>
+
+      <div class="drawer__body">
+        <section data-view="cart" aria-label="Items in your cart">
+          <ul class="lines" id="cart-lines"></ul>
+          <div class="empty" id="cart-empty" hidden>
+            <p>Your cart is empty. Add something from the menu.</p>
+            <a class="btn btn--outline" href="#menu">See the menu</a>
+          </div>
+        </section>
+
+        <section data-view="checkout" aria-label="Checkout" hidden>
+          <form class="form" id="checkout-form" novalidate autocomplete="on">
+            <p class="form__hint">Fields marked optional can stay blank. Everything else is needed.</p>
+
+            <div class="field" data-field="name">
+              <label for="f-name">Name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" aria-describedby="f-name-err">
+              <p class="err" id="f-name-err" hidden></p>
+            </div>
+
+            <div class="field" data-field="phone">
+              <label for="f-phone">Contact number</label>
+              <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-describedby="f-phone-err">
+              <p class="err" id="f-phone-err" hidden></p>
+            </div>
+
+            <div class="field" data-field="facebook">
+              <label for="f-facebook">Facebook profile link <span class="opt">(optional)</span></label>
+              <input id="f-facebook" name="facebook" type="text" inputmode="url" autocomplete="off" aria-describedby="f-facebook-err">
+              <p class="err" id="f-facebook-err" hidden></p>
+            </div>
+
+            <div class="field" data-field="date">
+              <label for="f-date">Date</label>
+              <input id="f-date" name="date" type="date" aria-describedby="f-date-err">
+              <p class="err" id="f-date-err" hidden></p>
+            </div>
+
+            <fieldset class="field toggle" data-field="fulfilment">
+              <legend>Delivery or pick up</legend>
+              <div class="toggle__opts">
+                <input class="vh-input" type="radio" name="fulfilment" id="f-pickup" value="pickup">
+                <label for="f-pickup">Pick up</label>
+                <input class="vh-input" type="radio" name="fulfilment" id="f-delivery" value="delivery">
+                <label for="f-delivery">Delivery</label>
+              </div>
+            </fieldset>
+
+            <div class="field" data-field="address" data-only="delivery" hidden>
+              <label for="f-address">Delivery address</label>
+              <textarea id="f-address" name="address" rows="3" autocomplete="street-address" aria-describedby="f-address-err"></textarea>
+              <p class="err" id="f-address-err" hidden></p>
+            </div>
+
+            <div class="field infobox" data-only="pickup" hidden>
+              <p class="infobox__label">Pick-up location</p>
+              <p id="f-pickup-place"></p>
+            </div>
+
+            <div class="field" data-field="time">
+              <label for="f-time" id="f-time-label">Pick-up time</label>
+              <input id="f-time" name="time" type="time" aria-describedby="f-time-err">
+              <p class="err" id="f-time-err" hidden></p>
+            </div>
+
+            <fieldset class="field toggle" data-field="payment" aria-describedby="f-payment-err">
+              <legend>Payment</legend>
+              <div class="toggle__opts" id="f-payment-opts"></div>
+              <p class="err" id="f-payment-err" hidden></p>
+            </fieldset>
+
+            <div class="field infobox" id="f-gcash" hidden>
+              <p class="infobox__label">GCash</p>
+              <p id="f-gcash-text"></p>
+            </div>
+
+            <div class="summary" id="checkout-summary"></div>
+
+            <button class="btn btn--primary btn--block" type="submit">Place order</button>
+          </form>
+        </section>
+
+        <section data-view="done" aria-label="Order summary" hidden>
+          <div class="done" id="done-view"></div>
+        </section>
+      </div>
+
+      <footer class="drawer__foot" id="cart-foot">
+        <div class="summary" id="cart-summary"></div>
+        <button class="btn btn--primary btn--block" type="button" data-action="checkout">Checkout</button>
+      </footer>
+    </div>
+  </dialog>
+
+  <noscript><p class="noscript">This page needs JavaScript to show the menu. You can reach SimSim Burgers and Wraps on Facebook Messenger.</p></noscript>
+</body>
+</html>

@@ -1,0 +1,25 @@
+GSAP licence note
+
+Library:      GSAP (GreenSock Animation Platform)
+Version:      3.15.1
+Files here:   gsap.min.js, ScrollTrigger.min.js (unmodified, their own notices kept)
+Downloaded:   2026-11-06 from https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/
+              Each file matched the sha256 in jsDelivr's package listing.
+
+Licence:      GSAP Standard "No Charge" License
+Link:         https://gsap.com/standard-license
+Date checked: 2026-11-05
+Page dates:   Effective April 30, 2025. Last modified May 30, 2025.
+
+The npm package ships no licence file, so this note stands in for one and the
+terms themselves live at the link above. In short, as read on the date checked:
+
+- Free to use, including commercial use and all plugins.
+- Not allowed: using GSAP in no-code visual animation builders that compete with
+  Webflow, and removing or changing GSAP's notices.
+- Webflow can update or end the licence, so read the current page again before
+  this site is ever made public.
+- Self-hosting is not named directly. It was treated as covered by the licence's
+  general permission to use and reproduce GSAP in a website.
+
+This summary is not legal advice and does not replace the licence at the link.

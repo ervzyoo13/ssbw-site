@@ -1,0 +1,188 @@
+// All motion. Premium means slow and smooth: only transform and opacity ever animate.
+// prefers-reduced-motion gets no parallax, no drift, no smooth scroll, and simple fades only.
+
+import { scroller } from './scroller.js';
+import { routeTable } from './route.js';
+
+const ready = () => document.documentElement.classList.remove('js-wait');
+// Resolves when the first-visit preloader has cleared, or at once if it isn't showing or its script failed.
+const introGate = () => (window.ssbwLoader && window.ssbwLoader.done) || Promise.resolve();
+
+/* Split a headline into lines by where it actually wraps, then restore it after the reveal. */
+function splitLines(el) {
+  const original = el.innerHTML;
+  const lines = [];
+  let lastTop = null;
+  el.querySelectorAll('.w').forEach((w) => {
+    const top = w.offsetTop;
+    if (lastTop === null || Math.abs(top - lastTop) > 4) { lines.push([]); lastTop = top; }
+    lines[lines.length - 1].push(w.outerHTML);
+  });
+  el.classList.add('is-split');
+  el.innerHTML = lines.map((l) => `<span class="lm"><span class="li">${l.join(' ')}</span></span>`).join('');
+  return { inners: [...el.querySelectorAll('.li')], revert: () => { el.classList.remove('is-split'); el.innerHTML = original; } };
+}
+
+function fullMotion(gsap, ScrollTrigger) {
+  const hero = document.querySelector('.hero');
+  const stage = document.querySelector('.hero__stage');
+  const lines = gsap.utils.toArray('[data-hero-line]');
+  const masks = gsap.utils.toArray('.hero__mask');
+  const burger = document.querySelector('[data-hero-burger]');
+  const burgerWrap = document.querySelector('[data-hero-burger-wrap]');
+  const heroStickers = gsap.utils.toArray('.hero__sticker');
+  const cta = document.querySelector('[data-hero-cta]');
+  const rotOf = (el) => parseFloat(getComputedStyle(el).getPropertyValue('--rot')) || 0;
+
+  /* Smooth scrolling on desktop only. Phones keep their native feel. */
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 900px)').matches;
+  let lenis = null;
+  if (fine && window.Lenis) {
+    lenis = new window.Lenis({ lerp: 0.09, smoothWheel: true });
+    scroller.lenis = lenis;
+    lenis.on('scroll', ScrollTrigger.update);
+    const tick = (t) => lenis.raf(t * 1000);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+    if (window.ssbwLoader && window.ssbwLoader.active) {
+      lenis.stop();
+      introGate().then(() => lenis.start());
+    }
+  }
+
+  /* Hero on load: lines slide up from a mask, burger drops with a soft bounce, stickers pop */
+  gsap.set(lines, { yPercent: 118 });
+  gsap.set(burger, { y: () => -stage.offsetHeight * 0.42, opacity: 0, transformOrigin: '50% 90%' });
+  heroStickers.forEach((s) => gsap.set(s, { scale: 0.4, rotation: rotOf(s) - 24, opacity: 0 }));
+  gsap.set(cta, { opacity: 0, y: 16 });
+  ready();
+
+  const tl = gsap.timeline({ paused: true, defaults: { ease: 'power4.out' } });
+  tl.to(lines, { yPercent: 0, duration: 1.2, stagger: 0.14 }, 0.1)
+    .set(masks, { overflow: 'visible' }, '>')
+    .to(burger, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.in' }, 0.45)
+    .to(burger, { scaleY: 0.96, scaleX: 1.02, duration: 0.14, ease: 'power1.out' }, 1.25)
+    .to(burger, { y: -18, scaleY: 1.01, scaleX: 0.995, duration: 0.3, ease: 'power2.out' }, 1.39)
+    .to(burger, { y: 0, scaleY: 1, scaleX: 1, duration: 0.36, ease: 'power2.in' }, 1.69);
+  heroStickers.forEach((s, i) => {
+    tl.to(s, { scale: 1, rotation: rotOf(s), opacity: 1, duration: 0.8, ease: 'back.out(1.8)' }, 1.5 + i * 0.16);
+  });
+  tl.to(cta, { opacity: 1, y: 0, duration: 1 }, 1.0);
+  introGate().then(() => tl.play());
+
+  /* Hero on scroll: the burger trails the text and turns a few degrees */
+  gsap.to(burgerWrap, {
+    y: () => stage.offsetHeight * 0.14,
+    rotation: 5,
+    ease: 'none',
+    scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1, invalidateOnRefresh: true },
+  });
+
+  /* Waves drift sideways */
+  gsap.utils.toArray('[data-wave]').forEach((wave, i) => {
+    const dir = i % 2 ? 1 : -1;
+    const drift = { p: 0 };
+    const paint = () => {
+      const svg = wave.firstElementChild;
+      const d = Number(wave.dataset.drift) || 0;
+      if (svg) svg.style.transform = `translate3d(${((drift.p * 2 - 1) * d * dir).toFixed(1)}px, 0, 0)`;
+    };
+    paint();
+    gsap.to(drift, {
+      p: 1,
+      ease: 'none',
+      onUpdate: paint,
+      scrollTrigger: { trigger: wave, start: 'top bottom', end: 'bottom top', scrub: 1.2 },
+    });
+  });
+
+  /* Ingredient pieces: slow parallax, phones move less */
+  const phone = window.innerWidth < 768;
+  const reach = phone ? 28 : 72;
+  gsap.utils.toArray('.piece').forEach((piece, i) => {
+    const depth = Number((phone && piece.dataset.depthPhone) || piece.dataset.depth) || 1;
+    gsap.fromTo(piece, { y: -reach * depth, rotation: i % 2 ? -10 : 8 }, {
+      y: reach * depth,
+      rotation: i % 2 ? 12 : -10,
+      ease: 'none',
+      scrollTrigger: { trigger: piece.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1.4 },
+    });
+  });
+
+  /* Section headlines reveal line by line */
+  gsap.utils.toArray('[data-lines]').forEach((h) => {
+    const split = splitLines(h);
+    gsap.set(split.inners, { yPercent: 112 });
+    gsap.to(split.inners, {
+      yPercent: 0,
+      duration: 1.1,
+      ease: 'power4.out',
+      stagger: 0.12,
+      scrollTrigger: { trigger: h, start: 'top 88%', once: true },
+      onComplete: split.revert,
+    });
+  });
+
+  /* Menu cards stagger in, best-seller stickers pop */
+  const cards = gsap.utils.toArray('.card');
+  gsap.set(cards, { y: 48, opacity: 0 });
+  ScrollTrigger.batch(cards, {
+    start: 'top 90%',
+    once: true,
+    onEnter: (batch) => gsap.to(batch, { y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1, clearProps: 'transform,opacity' }),
+  });
+  gsap.utils.toArray('.card__badge').forEach((s) => {
+    const rot = rotOf(s);
+    gsap.fromTo(s, { scale: 0.4, rotation: rot - 24, opacity: 0 }, {
+      scale: 1, rotation: rot, opacity: 1, duration: 0.8, ease: 'back.out(1.8)', delay: 0.5,
+      scrollTrigger: { trigger: s, start: 'top 90%', once: true },
+    });
+  });
+
+  /* The little burger follows the route */
+  const marker = document.querySelector('.route__marker');
+  const map = document.getElementById('route-map');
+  const setX = gsap.quickSetter(marker, 'x', 'px');
+  const setY = gsap.quickSetter(marker, 'y', 'px');
+  const setR = gsap.quickSetter(marker, 'rotation', 'deg');
+  const place = (p) => {
+    const t = routeTable();
+    if (!t.length) return;
+    const f = p * (t.length - 1);
+    const i = Math.min(Math.floor(f), t.length - 2);
+    const k = f - i;
+    setX(t[i][0] + (t[i + 1][0] - t[i][0]) * k);
+    setY(t[i][1] + (t[i + 1][1] - t[i][1]) * k);
+    setR(Math.sin(p * 18) * 8);
+  };
+  const state = { p: 0 };
+  gsap.to(state, {
+    p: 1,
+    ease: 'none',
+    onUpdate: () => place(state.p),
+    scrollTrigger: { trigger: map, start: 'top 72%', end: 'bottom 72%', scrub: 0.8 },
+  });
+  place(0);
+  window.addEventListener('route:drawn', () => place(state.p));
+  window.addEventListener('waves:rebuilt', () => ScrollTrigger.refresh());
+
+  window.addEventListener('load', () => ScrollTrigger.refresh());
+}
+
+function reducedMotion(gsap) {
+  gsap.set('.hero__stage, [data-hero-cta]', { opacity: 0 });
+  ready();
+  introGate().then(() => gsap.to('.hero__stage, [data-hero-cta]', { opacity: 1, duration: 0.8, ease: 'none' }));
+  gsap.utils.toArray('.card, .sec-head, .service, .note, .stop').forEach((el) => {
+    gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'none', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+  });
+}
+
+export function initMotion() {
+  const { gsap, ScrollTrigger } = window;
+  if (!gsap || !ScrollTrigger) { ready(); return; }
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) reducedMotion(gsap);
+  else fullMotion(gsap, ScrollTrigger);
+}
