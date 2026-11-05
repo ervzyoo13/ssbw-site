@@ -46,7 +46,11 @@ function build(el) {
 
   el.style.setProperty('--wave-h', `${height}px`);
   el.dataset.drift = String(Math.round(period * 0.25));
-  el.innerHTML = `<svg class="wave__svg" width="${width}" height="${height + 2}" viewBox="0 0 ${width} ${height + 2}" style="left:${-period}px" aria-hidden="true" focusable="false">${defs}<path d="${d}" fill="${fill}"/></svg>`;
+  // Where a wave's cream is the shape itself, the shape carries the paper grain too, so the cream below it stays one sheet.
+  const paper = el.classList.contains('wave--to-cream')
+    ? `<defs><pattern id="wave-paper" width="384" height="384" patternUnits="userSpaceOnUse"><image href="assets/paper-grain.webp" width="384" height="384"/></pattern></defs><path class="wave__paper" d="${d}" fill="url(#wave-paper)"/>`
+    : '';
+  el.innerHTML = `<svg class="wave__svg" width="${width}" height="${height + 2}" viewBox="0 0 ${width} ${height + 2}" style="left:${-period}px" aria-hidden="true" focusable="false">${defs}<path d="${d}" fill="${fill}"/>${paper}</svg>`;
 }
 
 export function initWaves() {

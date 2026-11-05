@@ -11,6 +11,8 @@
 
 :root {
   --cream: #F6E9D6;
+  /* How strongly the printed paper grain shows on the cream sections (S-035). 0 turns it off. Try .04 to .07. */
+  --paper-opacity: .06;
   --card: #FBF4E9;
   --ink: #150903;
   --ink-soft: #5C4A3D;
@@ -65,6 +67,13 @@ section:focus { outline: none; }
 .ph { padding: 0 4px; border-radius: 4px; background: rgba(215, 177, 81, .38); font-weight: 700; white-space: nowrap; }
 .on-dark .ph { background: rgba(215, 177, 81, .2); color: var(--gold); }
 
+/* Printed paper grain on the cream (S-035). One tile, repeated at its real size, scrolling with the page. It sits under
+   everything in its section. Dark sections and cards stay clean. */
+.hero::before, .section:not(.on-dark)::before, .wave--ribbon::before, .wave--to-ink::before, .topbar::before, html.has-preloader .preloader::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; background: url("../assets/paper-grain.webp") 0 0 / 384px 384px repeat; opacity: var(--paper-opacity); pointer-events: none;
+}
+.wave__paper { opacity: var(--paper-opacity); }
+
 /* Layout */
 .wrap { position: relative; z-index: 1; width: 100%; max-width: 1440px; margin-inline: auto; padding-inline: var(--gutter); }
 .section { position: relative; padding-block: var(--pad-y); overflow: clip; background: var(--cream); }
@@ -111,7 +120,7 @@ html.has-preloader { overflow: hidden; scrollbar-gutter: stable; }
 html.has-preloader .preloader { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: var(--cream); transition: transform .9s cubic-bezier(.76, 0, .24, 1); will-change: transform; }
 .preloader.is-leaving { transform: translateY(calc(-100% - var(--edge-h, 112px))); }
 .preloader.is-fading { opacity: 0; transition: opacity .3s ease !important; }
-.preloader__in { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px; }
+.preloader__in { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 16px; }
 .preloader__mark { width: min(72vw, 320px); height: auto; color: var(--maroon); }
 .smash { width: min(64vw, 280px); height: auto; overflow: visible; }
 .smash__griddle { fill: var(--ink); }
@@ -149,7 +158,7 @@ html.has-preloader .preloader { position: fixed; inset: 0; z-index: 100; display
 
 /* Top bar */
 .topbar { position: fixed; inset: 0 0 auto; z-index: 30; height: var(--topbar); background: var(--cream); }
-.topbar__in { display: flex; align-items: center; justify-content: space-between; height: 100%; max-width: 1440px; margin-inline: auto; padding-inline: var(--gutter) 8px; }
+.topbar__in { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; height: 100%; max-width: 1440px; margin-inline: auto; padding-inline: var(--gutter) 8px; }
 .topbar__logo { display: inline-flex; align-items: center; min-height: 48px; color: var(--maroon); }
 .topbar__logo svg { width: 112px; height: 22px; }
 .topbar__actions { display: flex; gap: 8px; }
